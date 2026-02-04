@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>bakutours.shop – Explore Baku</title>
+  <style>
+    body{font-family:Arial,Helvetica,sans-serif;margin:0;background:#f7f7f7;color:#222}
+    header{background:#111;color:#fff;padding:30px;text-align:center}
+    header h1{margin:0;font-size:42px}
+    header p{margin-top:10px;font-size:18px;opacity:.8}
+
+    nav{background:#fff;padding:15px;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,.1)}
+    nav a{margin:0 15px;text-decoration:none;color:#111;font-weight:bold}
+
+    .container{max-width:1100px;margin:auto;padding:30px}
+
+    .section{margin-top:50px}
+    .section h2{font-size:28px;margin-bottom:20px}
+
+    .tours{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px}
+    .card{background:#fff;border-radius:14px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+    .card h3{margin-top:0}
+
+    .btn{display:inline-block;padding:12px 18px;background:#111;color:#fff;text-decoration:none;border-radius:10px;margin-top:10px}
+
+    form{background:#fff;padding:25px;border-radius:14px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+    input,select{width:100%;padding:12px;margin:10px 0;border:1px solid #ccc;border-radius:10px}
+    button{width:100%;padding:14px;border:none;border-radius:10px;background:#111;color:#fff;font-size:16px;cursor:pointer}
+
+    footer{text-align:center;padding:20px;background:#111;color:#fff;margin-top:60px}
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Explore Baku with Local Guides</h1>
+  <p>Book unforgettable tours in Azerbaijan – fast, easy and secure.</p>
+  <a class="btn" href="#booking">Book Now</a>
+</header>
+
+<nav>
+  <a href="#tours">Tours</a>
+  <a href="#booking">Booking</a>
+  <a href="#blog">Blog</a>
+  <a href="#contact">Contact</a>
+</nav>
+
+<div class="container">
+
+  <!-- TOURS SECTION -->
+  <section id="tours" class="section">
+    <h2>Popular Tours</h2>
+    <div class="tours">
+      <div class="card">
+        <h3>Baku City Tour</h3>
+        <p>Discover Old City, Flame Towers and seaside boulevard.</p>
+        <a class="btn" href="#booking">Reserve</a>
+      </div>
+
+      <div class="card">
+        <h3>Gobustan & Mud Volcanoes</h3>
+        <p>Ancient rock carvings and unique natural landscapes.</p>
+        <a class="btn" href="#booking">Reserve</a>
+      </div>
+
+      <div class="card">
+        <h3>Absheron Peninsula Tour</h3>
+        <p>Visit Ateshgah Temple and Yanardag Fire Mountain.</p>
+        <a class="btn" href="#booking">Reserve</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOOKING SECTION -->
+  <section id="booking" class="section">
+    <h2>Online Booking</h2>
+    <form>
+      <label>Select Tour</label>
+      <select>
+        <option>Baku City Tour</option>
+        <option>Gobustan & Mud Volcanoes</option>
+        <option>Absheron Peninsula Tour</option>
+        <option>Shamakhi & Gabala</option>
+        <option>VIP Private Tour</option>
+      </select>
+
+      <label>Date</label>
+      <input type="date" />
+
+      <label>Number of Guests</label>
+      <input type="number" placeholder="e.g. 2" />
+
+      <label>Phone / WhatsApp</label>
+      <input type="text" placeholder="+994..." />
+
+      <button type="submit">Confirm Booking</button>
+    </form>
+  </section>
+
+  <!-- BLOG SECTION -->
+  <section id="blog" class="section">
+    <h2>Travel Blog</h2>
+    <div class="tours">
+      <div class="card">
+        <h3>Best Things to Do in Baku</h3>
+        <p>Top attractions every tourist must see in Azerbaijan's capital.</p>
+      </div>
+
+      <div class="card">
+        <h3>Is Azerbaijan Safe for Tourists?</h3>
+        <p>Important travel tips for your first trip to Baku.</p>
+      </div>
+
+      <div class="card">
+        <h3>Top Day Trips Near Baku</h3>
+        <p>Gobustan, Gabala, Shamakhi and more destinations.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT SECTION -->
+  <section id="contact" class="section">
+    <h2>Contact Us</h2>
+    <p>📍 Based in Baku, Azerbaijan</p>
+    <p>💬 WhatsApp: +994 XX XXX XX XX</p>
+    <p>📩 Email: info@bakutours.shop</p>
+    <a class="btn" href="https://wa.me/994XXXXXXXXX">Chat on WhatsApp</a>
+  </section>
+
+</div>
+
+<footer>
+  <p>© 2026 bakutours.shop – All Rights Reserved.</p>
+</footer>
+
+</body>
+</html>
