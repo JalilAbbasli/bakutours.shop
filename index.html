@@ -1,1 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Baku Tours And Shops – Coming Soon</title>
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(160deg, #0b1f3a, #0f2f57);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 780px;
+      padding: 50px 24px;
+    }
+
+    /* Language switch */
+    .lang-switch {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+    }
+
+    select {
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: none;
+      font-weight: 600;
+    }
+
+    /* SVG logo */
+    .logo {
+      width: 240px;
+      margin: 0 auto 25px;
+      transition: transform 0.4s ease;
+    }
+
+    .logo:hover {
+      transform: scale(1.07) rotate(-1deg);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 10px 22px;
+      border-radius: 30px;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 22px;
+      color: #0b1f3a;
+      background: linear-gradient(135deg, #f7c600, #ffd84d);
+      letter-spacing: 1px;
+    }
+
+    h1 {
+      font-size: 38px;
+      margin-bottom: 16px;
+    }
+
+    p {
+      font-size: 18px;
+      line-height: 1.7;
+      margin-bottom: 30px;
+      color: #e6edf6;
+    }
+
+    /* Countdown */
+    .countdown {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 35px;
+    }
+
+    .time-box {
+      background: rgba(255,255,255,0.08);
+      padding: 14px 18px;
+      border-radius: 10px;
+      min-width: 70px;
+    }
+
+    .time-box span {
+      display: block;
+      font-size: 24px;
+      font-weight: bold;
+      color: #ffd84d;
+    }
+
+    .time-box small {
+      font-size: 12px;
+      opacity: 0.8;
+    }
+
+    /* Email form */
+    .notify {
+      margin-top: 10px;
+    }
+
+    .notify input {
+      padding: 12px;
+      width: 260px;
+      max-width: 100%;
+      border-radius: 6px 0 0 6px;
+      border: none;
+      outline: none;
+    }
+
+    .notify button {
+      padding: 12px 18px;
+      border-radius: 0 6px 6px 0;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+      background: linear-gradient(135deg, #f7c600, #ffd84d);
+      color: #0b1f3a;
+      transition: opacity 0.3s;
+    }
+
+    .notify button:hover {
+      opacity: 0.85;
+    }
+
+    .footer {
+      margin-top: 40px;
+      font-size: 14px;
+      color: #b9c9dc;
+    }
+
+    @media (max-width: 600px) {
+      h1 { font-size: 30px; }
+      p { font-size: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="lang-switch">
+    <select onchange="changeLang(this.value)">
+      <option value="en">EN</option>
+      <option value="az">AZ</option>
+    </select>
+  </div>
+
+  <div class="container">
+
+    <!-- SVG Logo -->
+    <svg class="logo" viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">
+      <rect width="400" height="200" fill="none" />
+      <text x="200" y="95" text-anchor="middle" font-size="48" fill="#ffd84d" font-weight="700">Baku</text>
+      <text x="200" y="135" text-anchor="middle" font-size="22" fill="#ffffff" letter-spacing="2">TOURS AND SHOPS</text>
+    </svg>
+
+    <div class="badge" id="coming">COMING SOON</div>
+
+    <h1 id="title">Baku Tours And Shops</h1>
+
+    <p id="desc">
+      Discover unforgettable tours, local experiences,
+      and unique shopping opportunities in Baku.
+    </p>
+
+    <!-- Countdown -->
+    <div class="countdown">
+      <div class="time-box"><span id="days">0</span><small id="d">Days</small></div>
+      <div class="time-box"><span id="hours">0</span><small id="h">Hours</small></div>
+      <div class="time-box"><span id="minutes">0</span><small id="m">Minutes</small></div>
+      <div class="time-box"><span id="seconds">0</span><small id="s">Seconds</small></div>
+    </div>
+
+    <!-- Email notify -->
+    <div class="notify">
+      <input type="email" placeholder="Email address" />
+      <button id="btn">Notify me</button>
+    </div>
+
+    <div class="footer">© 2026 Baku Tours And Shops</div>
+  </div>
+
+<script>
+  /* Language switch */
+  function changeLang(lang) {
+    if (lang === 'az') {
+      coming.innerText = 'TEZLİKLƏ';
+      title.innerText = 'Baku Tours And Shops';
+      desc.innerText = 'Bakıda unudulmaz turlar, yerli təcrübələr və alış-veriş imkanları çox yaxında.';
+      btn.innerText = 'Xəbər ver';
+      d.innerText = 'Gün'; h.innerText = 'Saat'; m.innerText = 'Dəqiqə'; s.innerText = 'Saniyə';
+    } else {
+      coming.innerText = 'COMING SOON';
+      desc.innerText = 'Discover unforgettable tours, local experiences, and unique shopping opportunities in Baku.';
+      btn.innerText = 'Notify me';
+      d.innerText = 'Days'; h.innerText = 'Hours'; m.innerText = 'Minutes'; s.innerText = 'Seconds';
+    }
+  }
+
+  /* Countdown – 7 days */
+  const targetDate = new Date().getTime() + 7 * 24 * 60 * 60 * 1000;
+
+  setInterval(() => {
+    const now = new Date().getTime();
+    const diff = targetDate - now;
+
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    const minutes = Math.floor((diff / (1000 * 60)) % 60);
+    const seconds = Math.floor((diff / 1000) % 60);
+
+    document.getElementById('days').innerText = days;
+    document.getElementById('hours').innerText = hours;
+    document.getElementById('minutes').innerText = minutes;
+    document.getElementById('seconds').innerText = seconds;
+  }, 1000);
+</script>
+
+</body>
+</html>
 
