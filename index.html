@@ -1,247 +1,794 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="az">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title> Baku Tours and Shops</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baku Tours & Shops | Premium Azerbaijan Experiences</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0071eb; /* GYG Blue */
+            --dark: #2d333f;
+            --light-grey: #6b7280;
+            --border: #e5e7eb;
+            --bg: #ffffff;
+            --secondary-bg: #f5f5f7;
+            --white: #ffffff;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
 
-<style>
-:root {
-  --primary:#FF5A5F;
-  --secondary:#003580;
-  --sidebar:#1A1D23;
-  --bg:#F4F7FA;
-  --white:#fff;
-  --border:#E5E7EB;
-}
+        body {
+            background-color: var(--bg);
+            color: var(--dark);
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
 
-*{margin:0;padding:0;box-sizing:border-box}
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
 
-body{
-  font-family:'Plus Jakarta Sans',sans-serif;
-  background:var(--bg);
-  display:flex;
-  min-height:100vh;
-}
+        /* --- HEADER --- */
+        header {
+            background: var(--white);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            height: 80px;
+            display: flex;
+            align-items: center;
+        }
 
-/* Sidebar */
-aside{
-  width:260px;
-  background:var(--sidebar);
-  color:#fff;
-  padding:2rem 1.5rem;
-}
+        .header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
 
-.admin-logo{
-  font-weight:800;
-  font-size:1.3rem;
-  margin-bottom:3rem;
-  display:block;
-  color:#fff;
-  text-decoration:none;
-}
-.admin-logo span{color:var(--primary)}
+        .logo {
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: var(--primary);
+            text-decoration: none;
+            flex: 1;
+        }
 
-.nav-item{
-  padding:12px 15px;
-  border-radius:8px;
-  margin-bottom:8px;
-  cursor:pointer;
-  font-weight:600;
-}
-.nav-item:hover,
-.nav-item.active{
-  background:var(--primary);
-}
+        .brand-name-center {
+            font-weight: 700;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: center;
+            flex: 2;
+        }
 
-/* Main */
-main{
-  flex:1;
-  padding:2rem 3rem;
-}
+        nav {
+            flex: 1;
+            display: flex;
+            justify-content: flex-end;
+        }
 
-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:2rem;
-}
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+        }
 
-.btn-add{
-  background:var(--secondary);
-  color:#fff;
-  border:none;
-  padding:10px 18px;
-  border-radius:8px;
-  font-weight:600;
-  cursor:pointer;
-}
+        nav a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: var(--transition);
+        }
 
-/* Stats */
-.stats-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-  gap:20px;
-  margin-bottom:2rem;
-}
+        nav a:hover {
+            color: var(--primary);
+        }
 
-.stat-card{
-  background:var(--white);
-  padding:1.5rem;
-  border-radius:12px;
-  box-shadow:0 4px 12px rgba(0,0,0,.03);
-}
-.stat-card h4{
-  font-size:.75rem;
-  text-transform:uppercase;
-  color:#6B7280;
-}
-.stat-card p{
-  font-size:1.8rem;
-  font-weight:800;
-  margin-top:6px;
-}
+        /* --- HERO SECTION --- */
+        .hero {
+            position: relative;
+            height: 550px;
+            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1527359443443-84a18acc616e?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: var(--white);
+            text-align: center;
+            padding: 0 20px;
+        }
 
-/* Table */
-.content-card{
-  background:var(--white);
-  border-radius:12px;
-  padding:1.5rem;
-}
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
 
-table{
-  width:100%;
-  border-collapse:collapse;
-  margin-top:1rem;
-}
-th,td{
-  padding:14px 10px;
-  border-bottom:1px solid var(--border);
-  font-size:.9rem;
-}
-th{
-  text-align:left;
-  color:#6B7280;
-}
+        .search-container {
+            background: var(--white);
+            padding: 10px;
+            border-radius: 16px;
+            display: flex;
+            gap: 10px;
+            width: 100%;
+            max-width: 900px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            margin-top: 30px;
+        }
 
-/* Status */
-.status{
-  padding:5px 12px;
-  border-radius:20px;
-  font-size:.75rem;
-  font-weight:700;
-}
-.confirmed{background:#D1FAE5;color:#065F46}
-.pending{background:#FEF3C7;color:#92400E}
-.cancelled{background:#FEE2E2;color:#991B1B}
+        .search-group {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 10px 15px;
+            border-right: 1px solid var(--border);
+            text-align: left;
+        }
 
-/* Tabs */
-.section{display:none}
-.section.active{display:block}
+        .search-group:last-of-type { border-right: none; }
 
-/* Mobile */
-@media(max-width:900px){
-  aside{display:none}
-  main{padding:1.5rem}
-}
-</style>
+        .search-group label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--light-grey);
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .search-group select, .search-group input {
+            border: none;
+            outline: none;
+            font-size: 1rem;
+            color: var(--dark);
+            font-weight: 500;
+            background: transparent;
+        }
+
+        .btn-search {
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            padding: 0 40px;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-search:hover { background: #005bbd; }
+
+        /* --- TOURS GRID --- */
+        .section-padding { padding: 80px 0; }
+        .section-title { font-size: 2rem; font-weight: 800; margin-bottom: 40px; }
+
+        .tours-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        .tour-card {
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: var(--transition);
+            background: var(--white);
+            position: relative;
+        }
+
+        .tour-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        /* Slider Styles */
+        .slider-container {
+            position: relative;
+            height: 240px;
+            overflow: hidden;
+        }
+
+        .slider-track {
+            display: flex;
+            height: 100%;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .slide {
+            min-width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .slider-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.8);
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .tour-card:hover .slider-btn { opacity: 1; }
+        .prev-btn { left: 10px; }
+        .next-btn { right: 10px; }
+
+        .tour-content { padding: 20px; }
+        .tour-meta { color: var(--light-grey); font-size: 0.85rem; font-weight: 500; margin-bottom: 8px; }
+        .tour-name { font-size: 1.15rem; font-weight: 700; margin-bottom: 12px; height: 55px; overflow: hidden; }
+        
+        .tour-stats { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; font-size: 0.9rem; }
+        .rating { color: #ffbc00; font-weight: 700; display: flex; align-items: center; gap: 4px; }
+        .duration { color: var(--light-grey); }
+
+        .tour-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--border);
+            padding-top: 15px;
+        }
+
+        .price-tag { font-weight: 800; font-size: 1.2rem; }
+        .price-tag span { font-weight: 400; font-size: 0.85rem; color: var(--light-grey); }
+
+        .btn-view {
+            padding: 10px 20px;
+            border-radius: 8px;
+            background: var(--secondary-bg);
+            color: var(--dark);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .btn-view:hover { background: var(--primary); color: var(--white); }
+
+        /* --- DETAIL PAGE --- */
+        #detail-page { display: none; padding-top: 40px; }
+        .back-btn { 
+            display: inline-flex; align-items: center; gap: 8px; 
+            text-decoration: none; color: var(--primary); font-weight: 600; margin-bottom: 30px;
+            cursor: pointer;
+        }
+
+        .detail-header { display: flex; flex-direction: column; gap: 10px; margin-bottom: 30px; }
+        .detail-header h1 { font-size: 2.5rem; font-weight: 800; }
+        
+        .detail-gallery {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            grid-template-rows: repeat(2, 250px);
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .detail-gallery img { width: 100%; height: 100%; object-fit: cover; border-radius: 12px; }
+        .main-img { grid-row: span 2; }
+
+        .detail-content-layout {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 50px;
+        }
+
+        .detail-section { margin-bottom: 40px; }
+        .detail-section h2 { margin-bottom: 20px; font-size: 1.5rem; }
+        .detail-section p { color: #4b5563; font-size: 1.05rem; margin-bottom: 15px; }
+
+        .booking-card {
+            position: sticky;
+            top: 120px;
+            border: 1px solid var(--border);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        }
+
+        .btn-book {
+            width: 100%;
+            padding: 16px;
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            background: #1a202c;
+            color: var(--white);
+            padding: 80px 0 40px;
+            margin-top: 100px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 50px;
+            margin-bottom: 50px;
+        }
+
+        .footer-logo { font-size: 1.5rem; font-weight: 800; margin-bottom: 20px; }
+        .footer-contact h4 { margin-bottom: 20px; }
+        .footer-contact p { margin-bottom: 10px; color: #cbd5e0; }
+        
+        .whatsapp-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: #25d366;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #2d3748;
+            padding-top: 30px;
+            text-align: center;
+            color: #718096;
+            font-size: 0.9rem;
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 992px) {
+            .brand-name-center { display: none; }
+            .search-container { flex-direction: column; padding: 20px; }
+            .search-group { border-right: none; border-bottom: 1px solid var(--border); }
+            .btn-search { padding: 15px; }
+            .detail-content-layout { grid-template-columns: 1fr; }
+            .detail-gallery { grid-template-columns: 1fr; grid-template-rows: auto; }
+            .main-img { grid-row: span 1; height: 300px; }
+        }
+
+        @media (max-width: 600px) {
+            header nav { display: none; }
+            .hero h1 { font-size: 2.2rem; }
+            .footer-grid { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
-
 <body>
 
-<aside>
-  <a class="admin-logo">BAKU<span>ADMIN</span></a>
-  <div class="nav-item active" onclick="switchTab('dashboard',this)">Dashboard</div>
-  <div class="nav-item" onclick="switchTab('bookings',this)">Bookings</div>
-  <div class="nav-item" onclick="switchTab('tours',this)">Manage Tours</div>
-</aside>
+    <!-- Header Section -->
+    <header>
+        <div class="container header-inner">
+            <a href="#" class="logo" onclick="navigateTo('home')">Baku Tours & Shops</a>
+            <div class="brand-name-center">Azərbaycanı Kəşf Edin</div>
+            <nav>
+                <ul>
+                    <li><a href="#" onclick="navigateTo('home')">Home</a></li>
+                    <li><a href="#tours">Tours</a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
 
-<main>
+    <!-- Page Content -->
+    <main id="app-root">
+        
+        <!-- HOME PAGE -->
+        <div id="home-page">
+            <section class="hero">
+                <div class="container">
+                    <h1>Səyahətiniz Bakıdan Başlayır</h1>
+                    <p>Azərbaycanın ən maraqlı turları və gizli məkanları bir ünvanda.</p>
+                    
+                    <div class="search-container">
+                        <div class="search-group">
+                            <label>Şəhər / Rayon</label>
+                            <select id="search-location">
+                                <option value="all">Bütün Yerlər</option>
+                                <option value="Bakı">Bakı</option>
+                                <option value="Qəbələ">Qəbələ</option>
+                                <option value="Şəki">Şəki</option>
+                                <option value="Quba">Quba</option>
+                                <option value="Naftalan">Naftalan</option>
+                            </select>
+                        </div>
+                        <div class="search-group">
+                            <label>Tur Növü</label>
+                            <select id="search-type">
+                                <option value="all">Bütün Növlər</option>
+                                <option value="City">Şəhər Turu</option>
+                                <option value="Nature">Təbiət</option>
+                                <option value="Culture">Mədəniyyət</option>
+                            </select>
+                        </div>
+                        <div class="search-group">
+                            <label>Tarix</label>
+                            <input type="date">
+                        </div>
+                        <button class="btn-search">Axtar</button>
+                    </div>
+                </div>
+            </section>
 
-<header>
-  <h1 id="pageTitle">Dashboard Overview</h1>
-  <button class="btn-add">+ New Tour</button>
-</header>
+            <section id="tours" class="container section-padding">
+                <h2 class="section-title">Populyar Turlar</h2>
+                <div class="tours-grid" id="tours-list">
+                    <!-- Dinamik turlar buraya gələcək -->
+                </div>
+            </section>
+        </div>
 
-<!-- Dashboard -->
-<section id="dashboard" class="section active">
-  <div class="stats-grid">
-    <div class="stat-card"><h4>Total Bookings</h4><p>128</p></div>
-    <div class="stat-card"><h4>Revenue</h4><p>$14,250</p></div>
-    <div class="stat-card"><h4>Active Tours</h4><p>12</p></div>
-    <div class="stat-card"><h4>Rating</h4><p>4.8</p></div>
-  </div>
-</section>
+        <!-- DETAIL PAGE -->
+        <div id="detail-page" class="container">
+            <div id="tour-detail-content">
+                <!-- Dinamik detallar buraya gələcək -->
+            </div>
+        </div>
 
-<!-- Bookings -->
-<section id="bookings" class="section">
-  <div class="content-card">
-    <h3>Recent Bookings</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>Customer</th>
-          <th>Tour</th>
-          <th>Date</th>
-          <th>Pax</th>
-          <th>Amount</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-      <tbody id="bookingTable"></tbody>
-    </table>
-  </div>
-</section>
+    </main>
 
-<!-- Tours -->
-<section id="tours" class="section">
-  <div class="content-card">
-    <h3>Manage Tours</h3>
-    <p style="margin-top:10px;color:#6B7280">
-      Tour management UI will be added here.
-    </p>
-  </div>
-</section>
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <div class="footer-logo">Baku Tours & Shops</div>
+                    <p>Azərbaycan daxili turlar və alış-veriş turları üzrə ixtisaslaşmış premium səyahət agentliyi.</p>
+                </div>
+                <div class="footer-contact">
+                    <h4>Əlaqə</h4>
+                    <p><i class="fas fa-envelope"></i> info@bakutours.shop</p>
+                    <p><i class="fas fa-map-marker-alt"></i> Bakı, Azərbaycan</p>
+                </div>
+                <div>
+                    <h4>Bizimlə Yazışın</h4>
+                    <a href="https://wa.me/994708680970" class="whatsapp-link">
+                        <i class="fab fa-whatsapp"></i> +994 70 868 09 70
+                    </a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                &copy; 2024 Baku Tours & Shops. Bütün hüquqlar qorunur. bakutours.shop
+            </div>
+        </div>
+    </footer>
 
-</main>
+    <script>
+        /**
+         * TOUR DATA ARRAY
+         */
+        const tourData = [
+            {
+                id: 1,
+                name: "Bakı Şəhər Turu: Qədim İçərişəhərdən Müasir Alov Qüllələrinə",
+                location: "Bakı",
+                type: "City",
+                price: 45,
+                duration: "6 saat",
+                rating: 4.9,
+                images: [
+                    "https://images.unsplash.com/photo-1565011523534-747a8601f10a?q=80&w=1000&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1584467541268-b040f83be3fd?q=80&w=1000&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1549944850-84e00be4203b?q=80&w=1000&auto=format&fit=crop"
+                ],
+                description: "Bakının ürəyinə səyahət edin. UNESCO-nun Ümumdünya İrsi siyahısına daxil olan İçərişəhərdən başlayaraq Bakı Bulvarı və müasir memarlıq inciləri olan Alov Qüllələri və Heydər Əliyev Mərkəzi ilə tanış olacaqsınız.",
+                includes: ["Professional bələdçi", "Nəqliyyat", "Su və çay süfrəsi"],
+                itinerary: "1. İçərişəhər (Qız Qalası, Şirvanşahlar Sarayı) <br> 2. Dağüstü Park <br> 3. Bakı Bulvarı <br> 4. Heydər Əliyev Mərkəzi"
+            },
+            {
+                id: 2,
+                name: "Qəbələ & Şamaxı: Təbiət və Tarixin Vəhdəti",
+                location: "Qəbələ",
+                type: "Nature",
+                price: 60,
+                duration: "12 saat",
+                rating: 4.8,
+                images: [
+                    "https://images.unsplash.com/photo-1518495973542-4542c06a5843?q=80&w=1000&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=1000&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=1000&auto=format&fit=crop"
+                ],
+                description: "Qəbələnin füsunkar təbiəti və Şamaxının qədim tarixi ilə tanış olun. Tufandağ kanat yolu ilə dağların zirvəsinə qalxacaq və Nohur gölünün sakitliyindən zövq alacaqsınız.",
+                includes: ["Kanat bileti", "Nahat yeməyi", "Komfortlu avtobus"],
+                itinerary: "1. Şamaxı Cümə Məscidi <br> 2. Nohur Gölü <br> 3. Tufandağ Yay-Qış Kompleksi <br> 4. Yeddi Gözəl Şəlaləsi"
+            },
+            {
+                id: 3,
+                name: "Qobustan və Palçıq Vulkanları Macərası",
+                location: "Bakı Region",
+                type: "Culture",
+                price: 55,
+                duration: "5 saat",
+                rating: 4.7,
+                images: [
+                    "https://images.unsplash.com/photo-1627564104554-18451f22d46e?q=80&w=1000&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1610450949065-1f280ca0297d?q=80&w=1000&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1582719478230-5fed38d341e3?q=80&w=1000&auto=format&fit=crop"
+                ],
+                description: "Qədim insanların yaşayış məskəni olan Qobustan qayaüstü rəsmlərini kəşf edin və dünyada nadir rast gəlinən aktiv palçıq vulkanlarını öz gözlərinizlə görün.",
+                includes: ["Muzey bileti", "SUV Nəqliyyat", "Su"],
+                itinerary: "1. Qobustan Dövlət Tarixi-Bədii Qoruğu <br> 2. Qayaüstü rəsmlər muzeyi <br> 3. Palçıq Vulkanları safari"
+            },
+            {
+                id: 4,
+                name: "Quba & Xınalıq: Buludlar Üzərindəki Kənd",
+                location: "Quba",
+                type: "Nature",
+                price: 75,
+                duration: "14 saat",
+                rating: 5.0,
+                images: [
+                    "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=1000&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=1000&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=1000&auto=format&fit=crop"
+                ],
+                description: "Qubanın Qırmızı qəsəbəsi və Avropanın ən yüksək yaşayış məntəqələrindən biri olan Xınalıq kəndinə unudulmaz səyahət.",
+                includes: ["4x4 Nəqliyyat", "Kənd evi naharı", "Bələdçi"],
+                itinerary: "1. Quba Qəçreş meşəsi <br> 2. Minarə dağı <br> 3. Xınalıq kəndi gəzintisi"
+            },
+            {
+                id: 5,
+                name: "Şəki: Karvansaralar və Şəki Xan Sarayı",
+                location: "Şəki",
+                type: "Culture",
+                price: 80,
+                duration: "1 gün",
+                rating: 4.9,
+                images: [
+                    "https://images.unsplash.com/photo-1605649487212-47bdab064df7?q=80&w=1000&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?q=80&w=1000&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1578319439584-104c94d37305?q=80&w=1000&auto=format&fit=crop"
+                ],
+                description: "Azərbaycanın ən rəngarəng şəhərlərindən biri olan Şəkidə Xan Sarayı, Karvansaralar və dadlı Şəki şirniyyatları sizi gözləyir.",
+                includes: ["Şəki Xan Sarayı girişi", "Kiş kəndi ziyarəti", "Nəqliyyat"],
+                itinerary: "1. Şəki Xan Sarayı <br> 2. Karvansara ziyarəti <br> 3. Kiş Alban Məbədi <br> 4. Halva emalatxanası"
+            },
+            {
+                id: 6,
+                name: "Atəşgah və Yanardağ: Odlar Yurdu Turu",
+                location: "Bakı",
+                type: "Culture",
+                price: 40,
+                duration: "4 saat",
+                rating: 4.6,
+                images: [
+                    "https://images.unsplash.com/photo-1523438885200-e635ba2c371e?q=80&w=1000&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1542332213-9b5a5a3fab35?q=80&w=1000&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1533038590840-1cde6e668a91?q=80&w=1000&auto=format&fit=crop"
+                ],
+                description: "Azərbaycanın niyə 'Odlar Yurdu' adlandığını Atəşgah məbədini və heç vaxt sönməyən Yanardağı görərək anlayacaqsınız.",
+                includes: ["Giriş biletləri", "Nəqliyyat", "Professional bələdçi"],
+                itinerary: "1. Atəşgah Məbədi <br> 2. Yanardağ təbii qaz alovu <br> 3. Qala Etnoqrafik Muzeyi"
+            },
+            {
+                id: 7,
+                name: "Bakı Shopping Turu: Mall-lar və Brendlər",
+                location: "Bakı",
+                type: "City",
+                price: 30,
+                duration: "8 saat",
+                rating: 4.5,
+                images: [
+                    "https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=1000&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?q=80&w=1000&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?q=80&w=1000&auto=format&fit=crop"
+                ],
+                description: "Bakının ən lüks ticarət mərkəzlərində və butiklərində VIP alış-veriş təcrübəsi.",
+                includes: ["Şəxsi sürücü", "Mall transferləri", "Köməkçi"],
+                itinerary: "1. Deniz Mall <br> 2. Port Baku Mall <br> 3. 28 Mall <br> 4. Ganjlik Mall"
+            },
+            {
+                id: 8,
+                name: "Naftalan Sağlamlıq və Müalicə Turu",
+                location: "Naftalan",
+                type: "Culture",
+                price: 120,
+                duration: "1 gün",
+                rating: 4.8,
+                images: [
+                    "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?q=80&w=1000&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1519823551278-64ac92734fb1?q=80&w=1000&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1515377905703-c4788e51af15?q=80&w=1000&auto=format&fit=crop"
+                ],
+                description: "Dünyanın yeganə müalicəvi nefti olan Naftalan nefti ilə vannalar və kurort istirahəti.",
+                includes: ["Müalicə seansı", "Sanatoriya naharı", "Gediş-dönüş transfer"],
+                itinerary: "1. Naftalan şəhəri <br> 2. Müalicə mərkəzi <br> 3. Fizioterapiya seansları"
+            },
+            {
+                id: 9,
+                name: "Gəncə: Göygöl və Maralgöl Gözəlliyi",
+                location: "Gəncə",
+                type: "Nature",
+                price: 90,
+                duration: "1 gün",
+                rating: 4.9,
+                images: [
+                    "https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=1000&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1472396961695-1ad7a82fe38b?q=80&w=1000&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1433086566280-5786366773aa?q=80&w=1000&auto=format&fit=crop"
+                ],
+                description: "Azərbaycanın incisi Göygöl və Maralgölün əsrarəngiz təbiətini kəşf edin.",
+                includes: ["Milli Park girişi", "Piknik nahar", "Nəqliyyat"],
+                itinerary: "1. Göygöl Milli Parkı <br> 2. Maralgöl yürüşü <br> 3. Gəncə şəhər mərkəzi"
+            }
+        ];
 
-<script>
-const bookings=[
- {c:"John Doe",t:"Baku Old City",d:"2026-02-10",p:2,a:"$70",s:"confirmed"},
- {c:"Sarah Smith",t:"Sheki Heritage",d:"2026-02-12",p:4,a:"$340",s:"pending"},
- {c:"Ahmed Khan",t:"Gobustan Tour",d:"2026-02-15",p:1,a:"$55",s:"confirmed"},
- {c:"Elena Petrova",t:"Shusha Cultural",d:"2026-02-20",p:3,a:"$360",s:"cancelled"}
-];
+        const toursList = document.getElementById('tours-list');
+        const homePage = document.getElementById('home-page');
+        const detailPage = document.getElementById('detail-page');
+        const detailContent = document.getElementById('tour-detail-content');
 
-function loadBookings(){
- document.getElementById('bookingTable').innerHTML=
-  bookings.map(b=>`
-   <tr>
-    <td><strong>${b.c}</strong></td>
-    <td>${b.t}</td>
-    <td>${b.d}</td>
-    <td>${b.p}</td>
-    <td>${b.a}</td>
-    <td><span class="status ${b.s}">${b.s}</span></td>
-   </tr>
-  `).join('');
-}
+        /**
+         * RENDER TOURS TO HOME PAGE
+         */
+        function renderTours(data) {
+            toursList.innerHTML = '';
+            data.forEach((tour, tourIndex) => {
+                const card = document.createElement('div');
+                card.className = 'tour-card';
+                
+                // Slider Logic
+                let currentSlide = 0;
+                
+                card.innerHTML = `
+                    <div class="slider-container" id="slider-${tour.id}">
+                        <button class="slider-btn prev-btn" onclick="moveSlide(event, ${tour.id}, -1)"><i class="fas fa-chevron-left"></i></button>
+                        <div class="slider-track" id="track-${tour.id}">
+                            ${tour.images.map(img => `<img src="${img}" class="slide" alt="${tour.name}">`).join('')}
+                        </div>
+                        <button class="slider-btn next-btn" onclick="moveSlide(event, ${tour.id}, 1)"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                    <div class="tour-content">
+                        <div class="tour-meta">${tour.location} • ${tour.type}</div>
+                        <h3 class="tour-name">${tour.name}</h3>
+                        <div class="tour-stats">
+                            <div class="rating"><i class="fas fa-star"></i> ${tour.rating}</div>
+                            <div class="duration"><i class="far fa-clock"></i> ${tour.duration}</div>
+                        </div>
+                        <div class="tour-footer">
+                            <div class="price-tag"><span>Başlayan qiymət:</span> <br>€${tour.price}</div>
+                            <a href="#" class="btn-view" onclick="showTourDetail(event, ${tour.id})">Ətraflı Bax</a>
+                        </div>
+                    </div>
+                `;
+                toursList.appendChild(card);
+            });
+        }
 
-function switchTab(id,el){
- document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
- document.getElementById(id).classList.add('active');
+        /**
+         * SLIDER NAVIGATION
+         */
+        window.moveSlide = function(event, tourId, direction) {
+            event.stopPropagation();
+            const track = document.getElementById(`track-${tourId}`);
+            const slides = track.querySelectorAll('.slide');
+            const totalSlides = slides.length;
+            
+            // Get current transform or default to 0
+            let currentX = track.dataset.currentX ? parseInt(track.dataset.currentX) : 0;
+            
+            currentX += direction;
+            
+            if (currentX >= totalSlides) currentX = 0;
+            if (currentX < 0) currentX = totalSlides - 1;
+            
+            track.dataset.currentX = currentX;
+            track.style.transform = `translateX(-${currentX * 100}%)`;
+        };
 
- document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
- el.classList.add('active');
+        /**
+         * ROUTING / NAVIGATION
+         */
+        function navigateTo(page) {
+            if (page === 'home') {
+                homePage.style.display = 'block';
+                detailPage.style.display = 'none';
+                window.scrollTo(0,0);
+            }
+        }
 
- document.getElementById('pageTitle').innerText=
-  id.charAt(0).toUpperCase()+id.slice(1);
-}
+        window.showTourDetail = function(event, id) {
+            event.preventDefault();
+            const tour = tourData.find(t => t.id === id);
+            
+            homePage.style.display = 'none';
+            detailPage.style.display = 'block';
+            window.scrollTo(0,0);
 
-loadBookings();
-</script>
+            detailContent.innerHTML = `
+                <a class="back-btn" onclick="navigateTo('home')"><i class="fas fa-arrow-left"></i> Nəticələrə qayıt</a>
+                
+                <div class="detail-header">
+                    <div class="tour-meta">${tour.location} • ${tour.type}</div>
+                    <h1>${tour.name}</h1>
+                    <div class="tour-stats" style="font-size:1.1rem">
+                        <div class="rating"><i class="fas fa-star"></i> ${tour.rating} (Premium Seçim)</div>
+                        <div class="duration"><i class="far fa-clock"></i> ${tour.duration}</div>
+                    </div>
+                </div>
 
+                <div class="detail-gallery">
+                    <img src="${tour.images[0]}" class="main-img" alt="Main">
+                    <img src="${tour.images[1]}" alt="Sub 1">
+                    <img src="${tour.images[2]}" alt="Sub 2">
+                </div>
+
+                <div class="detail-content-layout">
+                    <div class="main-details">
+                        <div class="detail-section">
+                            <h2>Tur haqqında</h2>
+                            <p>${tour.description}</p>
+                        </div>
+                        <hr style="border:0; border-top:1px solid var(--border); margin:30px 0;">
+                        <div class="detail-section">
+                            <h2>Marşrut</h2>
+                            <p>${tour.itinerary}</p>
+                        </div>
+                        <div class="detail-section">
+                            <h2>Qiymətə daxildir</h2>
+                            <ul style="list-style:none; display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                                ${tour.includes.map(item => `<li style="display:flex; align-items:center; gap:10px; font-weight:500;"><i class="fas fa-check-circle" style="color:#10b981"></i> ${item}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <aside>
+                        <div class="booking-card">
+                            <p style="font-size:0.9rem; color:var(--light-grey);">Adambaşı qiymət</p>
+                            <div style="font-size:2rem; font-weight:800; margin-bottom:20px;">€${tour.price}</div>
+                            
+                            <div style="margin-bottom:15px;">
+                                <label style="display:block; font-size:0.8rem; font-weight:700; margin-bottom:5px;">TARİX SEÇİN</label>
+                                <input type="date" style="width:100%; padding:12px; border:1px solid var(--border); border-radius:8px;">
+                            </div>
+
+                            <button class="btn-book" onclick="alert('Rezervasiya sistemimiz tezliklə aktiv olacaq!')">İndi Rezerv Et</button>
+                            <p style="font-size:0.8rem; text-align:center; margin-top:15px; color:var(--light-grey);">
+                                <i class="fas fa-shield-alt"></i> Təhlükəsiz ödəniş və sürətli təsdiq
+                            </p>
+                        </div>
+                    </aside>
+                </div>
+            `;
+        };
+
+        /**
+         * INITIAL LOAD
+         */
+        document.addEventListener('DOMContentLoaded', () => {
+            renderTours(tourData);
+        });
+
+    </script>
 </body>
 </html>
