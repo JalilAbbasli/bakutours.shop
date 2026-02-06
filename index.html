@@ -1,226 +1,415 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Baku Tours And Shops – Coming Soon</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baku Tours and Shops | Discover Azerbaijan</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #FF5A5F; /* Warm Accent */
+            --secondary: #003580; /* Deep Caspian Blue */
+            --bg-light: #F7F9FB;
+            --text-dark: #2D333F;
+            --text-muted: #5E6D77;
+            --white: #FFFFFF;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --radius: 12px;
+            --transition: all 0.3s ease;
+        }
 
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      min-height: 100vh;
-      background: linear-gradient(160deg, #0b1f3a, #0f2f57);
-      color: #ffffff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-    }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
 
-    .container {
-      max-width: 780px;
-      padding: 50px 24px;
-    }
+        /* --- Navigation --- */
+        nav {
+            background: var(--white);
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
 
-    /* Language switch */
-    .lang-switch {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-    }
+        .logo {
+            font-weight: 800;
+            font-size: 1.4rem;
+            color: var(--secondary);
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
 
-    select {
-      padding: 6px 10px;
-      border-radius: 6px;
-      border: none;
-      font-weight: 600;
-    }
+        .logo span { color: var(--primary); }
 
-    /* SVG logo */
-    .logo {
-      width: 240px;
-      margin: 0 auto 25px;
-      transition: transform 0.4s ease;
-    }
+        /* --- Hero Section --- */
+        .hero {
+            position: relative;
+            height: 60vh;
+            min-height: 400px;
+            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.5)), 
+                        url('https://images.unsplash.com/photo-1527359443443-84a18acc6662?auto=format&fit=crop&w=1600&q=80');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: var(--white);
+            padding: 0 20px;
+        }
 
-    .logo:hover {
-      transform: scale(1.07) rotate(-1deg);
-    }
+        .hero h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
 
-    .badge {
-      display: inline-block;
-      padding: 10px 22px;
-      border-radius: 30px;
-      font-size: 14px;
-      font-weight: 700;
-      margin-bottom: 22px;
-      color: #0b1f3a;
-      background: linear-gradient(135deg, #f7c600, #ffd84d);
-      letter-spacing: 1px;
-    }
+        /* --- Search & Filter Bar --- */
+        .search-container {
+            background: var(--white);
+            padding: 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            width: 90%;
+            max-width: 1000px;
+            margin: -50px auto 40px;
+            position: relative;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            z-index: 10;
+        }
 
-    h1 {
-      font-size: 38px;
-      margin-bottom: 16px;
-    }
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
 
-    p {
-      font-size: 18px;
-      line-height: 1.7;
-      margin-bottom: 30px;
-      color: #e6edf6;
-    }
+        .filter-group label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
 
-    /* Countdown */
-    .countdown {
-      display: flex;
-      justify-content: center;
-      gap: 15px;
-      margin-bottom: 35px;
-    }
+        .filter-group input, .filter-group select {
+            padding: 12px;
+            border: 1px solid #E0E4E8;
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            font-family: inherit;
+        }
 
-    .time-box {
-      background: rgba(255,255,255,0.08);
-      padding: 14px 18px;
-      border-radius: 10px;
-      min-width: 70px;
-    }
+        /* --- Tours Grid --- */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 5%;
+        }
 
-    .time-box span {
-      display: block;
-      font-size: 24px;
-      font-weight: bold;
-      color: #ffd84d;
-    }
+        .section-title {
+            margin-bottom: 30px;
+            font-size: 1.8rem;
+        }
 
-    .time-box small {
-      font-size: 12px;
-      opacity: 0.8;
-    }
+        .tours-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+        }
 
-    /* Email form */
-    .notify {
-      margin-top: 10px;
-    }
+        /* --- Tour Card Styling --- */
+        .tour-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            overflow: hidden;
+            transition: var(--transition);
+            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #eee;
+        }
 
-    .notify input {
-      padding: 12px;
-      width: 260px;
-      max-width: 100%;
-      border-radius: 6px 0 0 6px;
-      border: none;
-      outline: none;
-    }
+        .tour-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow);
+        }
 
-    .notify button {
-      padding: 12px 18px;
-      border-radius: 0 6px 6px 0;
-      border: none;
-      cursor: pointer;
-      font-weight: bold;
-      background: linear-gradient(135deg, #f7c600, #ffd84d);
-      color: #0b1f3a;
-      transition: opacity 0.3s;
-    }
+        .tour-image {
+            height: 220px;
+            position: relative;
+        }
 
-    .notify button:hover {
-      opacity: 0.85;
-    }
+        .tour-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
 
-    .footer {
-      margin-top: 40px;
-      font-size: 14px;
-      color: #b9c9dc;
-    }
+        .tour-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: var(--white);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--secondary);
+        }
 
-    @media (max-width: 600px) {
-      h1 { font-size: 30px; }
-      p { font-size: 16px; }
-    }
-  </style>
+        .tour-content {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tour-location {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .tour-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text-dark);
+            min-height: 3.4rem;
+        }
+
+        .tour-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+            padding-top: 15px;
+            border-top: 1px solid #F0F0F0;
+        }
+
+        .tour-price {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--secondary);
+        }
+
+        .tour-price span {
+            font-size: 0.8rem;
+            font-weight: 400;
+            color: var(--text-muted);
+        }
+
+        .view-btn {
+            background: var(--primary);
+            color: var(--white);
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .view-btn:hover {
+            background: #e04a4f;
+        }
+
+        .rating {
+            color: #FFB400;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 600px) {
+            .search-container {
+                grid-template-columns: 1fr;
+            }
+            .hero h1 { font-size: 1.8rem; }
+        }
+    </style>
 </head>
 <body>
 
-  <div class="lang-switch">
-    <select onchange="changeLang(this.value)">
-      <option value="en">EN</option>
-      <option value="az">AZ</option>
-    </select>
-  </div>
+    <nav>
+        <a href="index.html" class="logo">BAKU<span>TOURS</span></a>
+        <div class="nav-links">
+            <span style="font-size: 0.9rem; font-weight: 600; color: var(--text-muted)">Azerbaijan Experiences</span>
+        </div>
+    </nav>
 
-  <div class="container">
+    <header class="hero">
+        <h1>Discover Azerbaijan with Baku Tours and Shops</h1>
+        <p>Premium experiences curated by local experts</p>
+    </header>
 
-    <!-- SVG Logo -->
-    <svg class="logo" viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">
-      <rect width="400" height="200" fill="none" />
-      <text x="200" y="95" text-anchor="middle" font-size="48" fill="#ffd84d" font-weight="700">Baku</text>
-      <text x="200" y="135" text-anchor="middle" font-size="22" fill="#ffffff" letter-spacing="2">TOURS AND SHOPS</text>
-    </svg>
+    <section class="search-container">
+        <div class="filter-group">
+            <label>Search</label>
+            <input type="text" id="searchInput" placeholder="Where do you want to go?">
+        </div>
+        <div class="filter-group">
+            <label>Region</label>
+            <select id="regionFilter">
+                <option value="all">All Regions</option>
+                <option value="Baku">Baku City</option>
+                <option value="Gobustan">Gobustan & Absheron</option>
+                <option value="Sheki">Sheki</option>
+                <option value="Shahdag">Shahdag & Guba</option>
+                <option value="Karabakh">Karabakh</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>Max Price (₼)</label>
+            <input type="number" id="priceFilter" placeholder="Enter amount">
+        </div>
+    </section>
 
-    <div class="badge" id="coming">COMING SOON</div>
+    <main class="container">
+        <h2 class="section-title">Top Rated Experiences</h2>
+        <div class="tours-grid" id="toursGrid">
+            </div>
+    </main>
 
-    <h1 id="title">Baku Tours And Shops</h1>
+    <script>
+        // Mocking the JSON structure locally for demonstration
+        // In a real scenario, this would be: fetch('tours.json')
+        const toursData = [
+            {
+                id: 1,
+                title: "Old City & Modern Baku Highlights",
+                location: "Baku",
+                region: "Baku",
+                duration: "6 Hours",
+                price: 85,
+                rating: 4.9,
+                image: "https://images.unsplash.com/photo-1541341133215-68042566735c?auto=format&fit=crop&w=600&q=80"
+            },
+            {
+                id: 2,
+                title: "Mud Volcanoes & Gobustan Rock Art",
+                location: "Gobustan",
+                region: "Gobustan",
+                duration: "8 Hours",
+                price: 110,
+                rating: 4.8,
+                image: "https://images.unsplash.com/photo-1589182373726-e4f658ab50f0?auto=format&fit=crop&w=600&q=80"
+            },
+            {
+                id: 3,
+                title: "Sheki Palace & Silk Road Heritage",
+                location: "Sheki",
+                region: "Sheki",
+                duration: "2 Days",
+                price: 250,
+                rating: 5.0,
+                image: "https://images.unsplash.com/photo-1582239454848-02a829f03212?auto=format&fit=crop&w=600&q=80"
+            },
+            {
+                id: 4,
+                title: "Shahdag Mountain Adventure",
+                location: "Shahdag",
+                region: "Shahdag",
+                duration: "10 Hours",
+                price: 140,
+                rating: 4.7,
+                image: "https://images.unsplash.com/photo-1544198365-f5d60b6d8190?auto=format&fit=crop&w=600&q=80"
+            },
+            {
+                id: 5,
+                title: "Karabakh: Shusha Heritage Tour",
+                location: "Shusha",
+                region: "Karabakh",
+                duration: "12 Hours",
+                price: 180,
+                rating: 4.9,
+                image: "https://images.unsplash.com/photo-1627568579044-f87c06126685?auto=format&fit=crop&w=600&q=80"
+            }
+        ];
 
-    <p id="desc">
-      Discover unforgettable tours, local experiences,
-      and unique shopping opportunities in Baku.
-    </p>
+        const toursGrid = document.getElementById('toursGrid');
+        const searchInput = document.getElementById('searchInput');
+        const regionFilter = document.getElementById('regionFilter');
+        const priceFilter = document.getElementById('priceFilter');
 
-    <!-- Countdown -->
-    <div class="countdown">
-      <div class="time-box"><span id="days">0</span><small id="d">Days</small></div>
-      <div class="time-box"><span id="hours">0</span><small id="h">Hours</small></div>
-      <div class="time-box"><span id="minutes">0</span><small id="m">Minutes</small></div>
-      <div class="time-box"><span id="seconds">0</span><small id="s">Seconds</small></div>
-    </div>
+        function renderTours(tours) {
+            toursGrid.innerHTML = '';
+            
+            if (tours.length === 0) {
+                toursGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 40px;">No tours found matching your criteria.</p>';
+                return;
+            }
 
-    <!-- Email notify -->
-    <div class="notify">
-      <input type="email" placeholder="Email address" />
-      <button id="btn">Notify me</button>
-    </div>
+            tours.forEach(tour => {
+                const card = `
+                    <article class="tour-card">
+                        <div class="tour-image">
+                            <img src="${tour.image}" alt="${tour.title}">
+                            <div class="tour-badge">${tour.duration}</div>
+                        </div>
+                        <div class="tour-content">
+                            <div class="tour-location">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                                ${tour.location}
+                            </div>
+                            <h3 class="tour-title">${tour.title}</h3>
+                            <div class="rating">★ ${tour.rating}</div>
+                            <div class="tour-info">
+                                <div class="tour-price">₼${tour.price} <span>/ person</span></div>
+                                <a href="tour.html?id=${tour.id}" class="view-btn">View Tour</a>
+                            </div>
+                        </div>
+                    </article>
+                `;
+                toursGrid.innerHTML += card;
+            });
+        }
 
-    <div class="footer">© 2026 Baku Tours And Shops</div>
-  </div>
+        function filterTours() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const selectedRegion = regionFilter.value;
+            const maxPrice = parseFloat(priceFilter.value) || Infinity;
 
-<script>
-  /* Language switch */
-  function changeLang(lang) {
-    if (lang === 'az') {
-      coming.innerText = 'TEZLİKLƏ';
-      title.innerText = 'Baku Tours And Shops';
-      desc.innerText = 'Bakıda unudulmaz turlar, yerli təcrübələr və alış-veriş imkanları çox yaxında.';
-      btn.innerText = 'Xəbər ver';
-      d.innerText = 'Gün'; h.innerText = 'Saat'; m.innerText = 'Dəqiqə'; s.innerText = 'Saniyə';
-    } else {
-      coming.innerText = 'COMING SOON';
-      desc.innerText = 'Discover unforgettable tours, local experiences, and unique shopping opportunities in Baku.';
-      btn.innerText = 'Notify me';
-      d.innerText = 'Days'; h.innerText = 'Hours'; m.innerText = 'Minutes'; s.innerText = 'Seconds';
-    }
-  }
+            const filtered = toursData.filter(tour => {
+                const matchesSearch = tour.title.toLowerCase().includes(searchTerm);
+                const matchesRegion = selectedRegion === 'all' || tour.region === selectedRegion;
+                const matchesPrice = tour.price <= maxPrice;
+                return matchesSearch && matchesRegion && matchesPrice;
+            });
 
-  /* Countdown – 7 days */
-  const targetDate = new Date().getTime() + 7 * 24 * 60 * 60 * 1000;
+            renderTours(filtered);
+        }
 
-  setInterval(() => {
-    const now = new Date().getTime();
-    const diff = targetDate - now;
+        // Event Listeners
+        searchInput.addEventListener('input', filterTours);
+        regionFilter.addEventListener('change', filterTours);
+        priceFilter.addEventListener('input', filterTours);
 
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-    const minutes = Math.floor((diff / (1000 * 60)) % 60);
-    const seconds = Math.floor((diff / 1000) % 60);
-
-    document.getElementById('days').innerText = days;
-    document.getElementById('hours').innerText = hours;
-    document.getElementById('minutes').innerText = minutes;
-    document.getElementById('seconds').innerText = seconds;
-  }, 1000);
-</script>
-
+        // Initial Load
+        renderTours(toursData);
+    </script>
 </body>
 </html>
-
