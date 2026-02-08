@@ -155,40 +155,6 @@
             filter: brightness(1.1);
         }
 
-        /* Overlapping Cards */
-        .hero-cards {
-            position: relative;
-            height: 400px;
-        }
-
-        .card-stack {
-            position: relative;
-            width: 100%;
-            height: 100%;
-        }
-
-        .stack-item {
-            position: absolute;
-            width: 260px;
-            height: 320px;
-            border-radius: var(--radius-lg);
-            overflow: hidden;
-            box-shadow: var(--deep-shadow);
-            transition: 0.5s ease;
-            background: white;
-            border: 4px solid white;
-        }
-
-        .stack-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .stack-item:nth-child(1) { top: 0; right: 0; transform: rotate(5deg); z-index: 3; }
-        .stack-item:nth-child(2) { top: 40px; right: 80px; transform: rotate(-8deg); z-index: 2; }
-        .stack-item:nth-child(3) { top: 80px; right: 160px; transform: rotate(3deg); z-index: 1; }
-
         /* --- Request a Tour (WhatsApp Form) --- */
         .search-container {
             position: relative;
