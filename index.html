@@ -1,275 +1,439 @@
 <!DOCTYPE html>
-<html lang="az">
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Baku Tours & Shops</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baku Tour Shop | Premium Azerbaijan Experiences</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --brand-primary: #006ce4;
+            --brand-dark: #1a2b49;
+            --brand-accent: #febb02;
+        }
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: var(--brand-dark);
+            background-color: #ffffff;
+        }
 
-<style>
-:root{
---primary:#0071eb;
---dark:#1f2937;
---gray:#6b7280;
---border:#e5e7eb;
---bg:#ffffff;
---soft:#f5f7fa;
---transition:.3s ease;
-}
+        .tour-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,sans-serif}
-body{background:var(--bg);color:var(--dark)}
-.container{max-width:1200px;margin:auto;padding:0 20px}
+        .tour-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
 
-/* HEADER */
-header{
-height:80px;
-border-bottom:1px solid var(--border);
-display:flex;
-align-items:center;
-position:sticky;
-top:0;
-background:#fff;
-z-index:1000
-}
-.header-inner{
-display:flex;
-justify-content:space-between;
-align-items:center
-}
-.logo{
-font-weight:800;
-font-size:1.4rem;
-color:var(--primary);
-text-decoration:none
-}
+        .tour-image-container img {
+            transition: transform 0.6s ease;
+        }
 
-/* HERO */
-.hero{
-height:560px;
-background:
-linear-gradient(rgba(0,0,0,.35),rgba(0,0,0,.35)),
-url("https://images.unsplash.com/photo-1544986581-efac024faf62?q=80&w=2070&auto=format&fit=crop");
-background-size:cover;
-background-position:center;
-display:flex;
-align-items:center;
-text-align:center;
-color:#fff
-}
-.hero h1{
-font-size:3.2rem;
-font-weight:800;
-margin-bottom:15px
-}
+        .tour-card:hover .tour-image-container img {
+            transform: scale(1.1);
+        }
 
-/* SEARCH */
-.search-box{
-margin-top:30px;
-background:#fff;
-padding:15px;
-border-radius:16px;
-display:flex;
-gap:10px;
-box-shadow:0 20px 40px rgba(0,0,0,.25)
-}
-.search-box select,.search-box input{
-border:none;
-font-size:1rem;
-outline:none;
-padding:10px;
-flex:1
-}
-.search-box button{
-background:var(--primary);
-color:#fff;
-border:none;
-padding:0 30px;
-border-radius:10px;
-font-weight:700;
-cursor:pointer
-}
+        .sticky-header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid #f1f3f7;
+        }
 
-/* TOURS */
-.section{padding:80px 0}
-.tours-grid{
-display:grid;
-grid-template-columns:repeat(auto-fill,minmax(350px,1fr));
-gap:30px
-}
-.tour-card{
-border:1px solid var(--border);
-border-radius:16px;
-overflow:hidden;
-transition:var(--transition)
-}
-.tour-card:hover{transform:translateY(-6px);box-shadow:0 15px 30px rgba(0,0,0,.1)}
+        .btn-whatsapp {
+            background-color: #25D366;
+            color: white;
+            transition: filter 0.2s;
+        }
 
-/* SLIDER */
-.slider{position:relative;height:240px;overflow:hidden}
-.track{
-display:flex;
-height:100%;
-transition:.5s
-}
-.slide{
-min-width:100%;
-object-fit:cover
-}
-.slider button{
-position:absolute;
-top:50%;
-transform:translateY(-50%);
-background:rgba(255,255,255,.9);
-border:none;
-width:34px;
-height:34px;
-border-radius:50%;
-cursor:pointer
-}
-.prev{left:10px}
-.next{right:10px}
+        .btn-whatsapp:hover {
+            filter: brightness(0.95);
+        }
 
-/* TOUR CONTENT */
-.tour-body{padding:20px}
-.tour-body h3{font-size:1.1rem;margin:10px 0}
-.tour-footer{
-display:flex;
-justify-content:space-between;
-align-items:center;
-border-top:1px solid var(--border);
-padding-top:15px
-}
+        .info-tooltip:hover .tooltip-content {
+            display: block;
+        }
 
-/* DETAIL */
-#detail{display:none;padding:60px 0}
-.booking{
-border:1px solid var(--border);
-padding:25px;
-border-radius:20px;
-position:sticky;
-top:120px
-}
-.book-btn{
-width:100%;
-padding:15px;
-background:var(--primary);
-border:none;
-color:#fff;
-border-radius:12px;
-font-size:1.1rem;
-font-weight:700;
-cursor:pointer
-}
-
-/* FOOTER */
-footer{
-background:#111827;
-color:#fff;
-padding:60px 0 30px
-}
-footer a{color:#25d366;text-decoration:none;font-weight:700}
-</style>
+        .tooltip-content {
+            display: none;
+            width: 280px;
+            background-color: #1a2b49;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            margin-top: 8px;
+            font-size: 0.75rem;
+            line-height: 1.4;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+            z-index: 20;
+        }
+    </style>
 </head>
+<body class="bg-white">
 
-<body>
+    <!-- Header -->
+    <header class="sticky-header">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Top Utility -->
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="/" class="text-2xl font-extrabold text-blue-700 flex items-center gap-2">
+                        <i class="fa-solid fa-compass"></i>
+                        <span class="tracking-tight text-slate-900">Baku<span class="text-blue-600">Tour</span>Shop</span>
+                    </a>
+                </div>
 
-<header>
-<div class="container header-inner">
-<a class="logo">Baku Tours & Shops</a>
-</div>
-</header>
+                <div class="hidden md:flex items-center space-x-6 text-sm font-semibold">
+                    <a href="#" class="text-slate-600 hover:text-blue-600 flex items-center gap-2 transition-colors">
+                        <i class="fa-regular fa-heart text-lg"></i> Wishlist
+                    </a>
+                    <a href="#" class="text-slate-600 hover:text-blue-600 flex items-center gap-2 transition-colors">
+                        <div class="relative">
+                            <i class="fa-solid fa-cart-shopping text-lg"></i>
+                            <span class="absolute -top-2 -right-2 bg-blue-600 text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center">0</span>
+                        </div>
+                        Cart
+                    </a>
+                    <div class="flex items-center gap-2 cursor-pointer border border-slate-200 px-3 py-1.5 rounded-full hover:border-blue-300 transition-all">
+                        <span class="text-slate-700">EN / USD</span>
+                    </div>
+                    <button class="w-10 h-10 rounded-full border-2 border-slate-100 flex items-center justify-center hover:bg-slate-50 transition-colors">
+                        <i class="fa-solid fa-user text-slate-500"></i>
+                    </button>
+                </div>
 
-<section class="hero">
-<div class="container">
-<h1>Azərbaycanı Kəşf Et</h1>
+                <div class="md:hidden flex items-center">
+                    <i class="fa-solid fa-bars text-xl text-slate-700 cursor-pointer"></i>
+                </div>
+            </div>
+            
+            <!-- Main Nav -->
+            <div class="hidden md:flex items-center space-x-10 py-3 text-[13px] font-bold text-slate-500 border-t border-slate-50">
+                <a href="#" class="hover:text-blue-600 transition-colors uppercase tracking-wider">Explore Baku</a>
+                <a href="#" class="hover:text-blue-600 transition-colors uppercase tracking-wider">Places to see</a>
+                <a href="#" class="hover:text-blue-600 transition-colors uppercase tracking-wider">Things to do</a>
+                <a href="#" class="hover:text-blue-600 transition-colors uppercase tracking-wider">Trip inspiration</a>
+            </div>
+        </div>
+    </header>
 
-<div class="search-box">
-<select><option>Bakı</option></select>
-<select><option>City Tour</option></select>
-<input type="date">
-<button>Axtar</button>
-</div>
-</div>
-</section>
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <!-- Headline Section -->
+        <div class="mb-10">
+            <h1 class="text-5xl font-extrabold text-slate-900 tracking-tight">Baku</h1>
+            <div class="flex items-center mt-3 text-slate-500 font-medium">
+                <span>401 results</span>
+                <span class="mx-3 text-slate-300">•</span>
+                <span class="text-sm">Azerbaijan's capital of winds</span>
+            </div>
+        </div>
 
-<section class="section container">
-<div class="tours-grid" id="tours"></div>
-</section>
+        <!-- Sorting Bar -->
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-10 border-b border-slate-100 pb-6">
+            <div class="flex flex-wrap gap-3">
+                <button class="px-5 py-2.5 bg-blue-600 text-white rounded-full text-sm font-bold shadow-md shadow-blue-200">Recommended</button>
+                <button class="px-5 py-2.5 border border-slate-200 text-slate-600 rounded-full text-sm font-semibold hover:border-blue-400 hover:text-blue-600 transition-all">Price – Low to high</button>
+                <button class="px-5 py-2.5 border border-slate-200 text-slate-600 rounded-full text-sm font-semibold hover:border-blue-400 hover:text-blue-600 transition-all">Price – High to low</button>
+                <button class="px-5 py-2.5 border border-slate-200 text-slate-600 rounded-full text-sm font-semibold hover:border-blue-400 hover:text-blue-600 transition-all">Rating</button>
+            </div>
+            
+            <div class="relative info-tooltip flex items-center text-sm font-medium text-slate-400 cursor-help">
+                <span class="mr-2">How we rank activities</span>
+                <i class="fa-solid fa-circle-question text-blue-400"></i>
+                <div class="tooltip-content">
+                    Activities are ranked based on popularity, customer ratings, and overall performance. We prioritize verified experiences with consistently high feedback.
+                </div>
+            </div>
+        </div>
 
-<section id="detail" class="container"></section>
+        <!-- Tour Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            
+            <!-- Card 1: Gobustan -->
+            <div class="tour-card bg-white rounded-2xl overflow-hidden border border-slate-100 flex flex-col group">
+                <div class="relative overflow-hidden h-56 tour-image-container">
+                    <img src="https://images.unsplash.com/photo-1523438097201-512ae7d59c44?auto=format&fit=crop&q=80&w=800" alt="Gobustan" class="w-full h-full object-cover">
+                    <div class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider text-blue-700 shadow-sm">Small Group</div>
+                    <button class="absolute top-4 right-4 bg-white w-9 h-9 rounded-full flex items-center justify-center text-slate-400 hover:text-red-500 shadow-md transition-all active:scale-90">
+                        <i class="fa-regular fa-heart"></i>
+                    </button>
+                </div>
+                <div class="p-6 flex-grow flex flex-col">
+                    <h3 class="text-lg font-bold text-slate-900 leading-snug mb-3 min-h-[56px]">Baku: Gobustan & Absheron Tour – Lunch & Entry Tickets Included</h3>
+                    <div class="space-y-2 mb-6">
+                        <div class="flex items-center text-sm text-slate-500">
+                            <i class="fa-regular fa-clock w-5 text-blue-500"></i>
+                            <span>7–8 hours</span>
+                        </div>
+                        <div class="flex items-center text-sm text-slate-500">
+                            <i class="fa-solid fa-car-side w-5 text-blue-500"></i>
+                            <span>Pickup Available</span>
+                        </div>
+                    </div>
+                    <div class="mt-auto">
+                        <div class="flex items-end justify-between mb-4">
+                            <div>
+                                <div class="flex items-center gap-1 mb-1">
+                                    <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+                                    <span class="text-sm font-bold text-slate-900">4.9</span>
+                                    <span class="text-xs text-slate-400">(2.4k)</span>
+                                </div>
+                                <p class="text-sm font-bold text-slate-900">From $65 <span class="text-slate-400 font-normal">/ person</span></p>
+                            </div>
+                            <a href="https://wa.me/994708680970" target="_blank" class="btn-whatsapp px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2">
+                                <i class="fa-brands fa-whatsapp text-lg"></i> Reserve
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-<footer>
-<div class="container">
-<p>📧 info@bakutours.shop</p>
-<p>📱 <a href="https://wa.me/994708680970">+994 70 868 09 70</a></p>
-<p style="margin-top:20px;color:#9ca3af">© bakutours.shop</p>
-</div>
-</footer>
+            <!-- Card 2: Shusha -->
+            <div class="tour-card bg-white rounded-2xl overflow-hidden border border-slate-100 flex flex-col group">
+                <div class="relative overflow-hidden h-56 tour-image-container">
+                    <img src="https://images.unsplash.com/photo-1621252179027-94459d278660?auto=format&fit=crop&q=80&w=800" alt="Karabagh" class="w-full h-full object-cover">
+                    <button class="absolute top-4 right-4 bg-white w-9 h-9 rounded-full flex items-center justify-center text-slate-400 hover:text-red-500 shadow-md transition-all">
+                        <i class="fa-regular fa-heart"></i>
+                    </button>
+                </div>
+                <div class="p-6 flex-grow flex flex-col">
+                    <h3 class="text-lg font-bold text-slate-900 leading-snug mb-3 min-h-[56px]">Baku: Shusha and Khankendi Day Tour – Karabagh Region</h3>
+                    <div class="space-y-2 mb-6 text-sm text-slate-500">
+                        <div class="flex items-center">
+                            <i class="fa-regular fa-clock w-5 text-blue-500"></i>
+                            <span>18 hours</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fa-solid fa-users w-5 text-blue-500"></i>
+                            <span>Small group</span>
+                        </div>
+                    </div>
+                    <div class="mt-auto">
+                        <div class="flex items-end justify-between mb-4">
+                            <div>
+                                <div class="flex items-center gap-1 mb-1 text-slate-400 text-xs italic">
+                                    High demand experience
+                                </div>
+                                <p class="text-sm font-bold text-slate-900">From $120 <span class="text-slate-400 font-normal">/ person</span></p>
+                            </div>
+                            <a href="https://wa.me/994708680970" target="_blank" class="btn-whatsapp px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2">
+                                <i class="fa-brands fa-whatsapp text-lg"></i> Reserve
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-<script>
-const tours=[
-{
-id:1,
-name:"Bakı Şəhər Turu",
-price:45,
-images:[
-"https://images.unsplash.com/photo-1565011523534-747a8601f10a",
-"https://images.unsplash.com/photo-1584467541268-b040f83be3fd",
-"https://images.unsplash.com/photo-1549944850-84e00be4203b"
-]
-}
-];
+            <!-- Card 3: Sheki -->
+            <div class="tour-card bg-white rounded-2xl overflow-hidden border border-slate-100 flex flex-col group">
+                <div class="relative overflow-hidden h-56 tour-image-container">
+                    <img src="https://images.unsplash.com/photo-1548013146-72479768bbaa?auto=format&fit=crop&q=80&w=800" alt="Sheki" class="w-full h-full object-cover">
+                    <button class="absolute top-4 right-4 bg-white w-9 h-9 rounded-full flex items-center justify-center text-slate-400 hover:text-red-500 shadow-md transition-all">
+                        <i class="fa-regular fa-heart"></i>
+                    </button>
+                </div>
+                <div class="p-6 flex-grow flex flex-col">
+                    <h3 class="text-lg font-bold text-slate-900 leading-snug mb-3 min-h-[56px]">From Baku: Shamakhi, Ismailli, Gabala and Sheki Day Tour</h3>
+                    <div class="space-y-2 mb-6 text-sm text-slate-500">
+                        <div class="flex items-center">
+                            <i class="fa-solid fa-route w-5 text-blue-500"></i>
+                            <span>Multiple Cities</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fa-solid fa-check w-5 text-blue-500"></i>
+                            <span>Professional Guide</span>
+                        </div>
+                    </div>
+                    <div class="mt-auto">
+                        <div class="flex items-end justify-between mb-4">
+                            <div>
+                                <div class="flex items-center gap-1 mb-1">
+                                    <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+                                    <span class="text-sm font-bold text-slate-900">3.9</span>
+                                </div>
+                                <p class="text-sm font-bold text-slate-900">From $59 <span class="text-slate-400 font-normal">/ person</span></p>
+                            </div>
+                            <a href="https://wa.me/994708680970" target="_blank" class="btn-whatsapp px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2">
+                                <i class="fa-brands fa-whatsapp text-lg"></i> Reserve
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-const toursEl=document.getElementById("tours");
-const detail=document.getElementById("detail");
+            <!-- Card 4: Candy Mountains -->
+            <div class="tour-card bg-white rounded-2xl overflow-hidden border border-slate-100 flex flex-col group">
+                <div class="relative overflow-hidden h-56 tour-image-container">
+                    <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&q=80&w=800" alt="Candy Mountains" class="w-full h-full object-cover">
+                    <button class="absolute top-4 right-4 bg-white w-9 h-9 rounded-full flex items-center justify-center text-slate-400 hover:text-red-500 shadow-md transition-all">
+                        <i class="fa-regular fa-heart"></i>
+                    </button>
+                </div>
+                <div class="p-6 flex-grow flex flex-col">
+                    <h3 class="text-lg font-bold text-slate-900 leading-snug mb-3 min-h-[56px]">Enchanting Candy Mountains (Guba & Khinalig Village)</h3>
+                    <div class="space-y-2 mb-6 text-sm text-slate-500">
+                        <div class="flex items-center">
+                            <i class="fa-solid fa-mountain w-5 text-blue-500"></i>
+                            <span>High Altitude Exploration</span>
+                        </div>
+                    </div>
+                    <div class="mt-auto">
+                        <div class="flex items-end justify-between mb-4">
+                            <div>
+                                <div class="flex items-center gap-1 mb-1">
+                                    <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+                                    <span class="text-sm font-bold text-slate-900">4.1</span>
+                                </div>
+                                <p class="text-sm font-bold text-slate-900">From $51 <span class="text-slate-400 font-normal">/ person</span></p>
+                            </div>
+                            <a href="https://wa.me/994708680970" target="_blank" class="btn-whatsapp px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2">
+                                <i class="fa-brands fa-whatsapp text-lg"></i> Reserve
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-tours.forEach(t=>{
-let slide=0;
-const card=document.createElement("div");
-card.className="tour-card";
-card.innerHTML=`
-<div class="slider">
-<button class="prev">‹</button>
-<div class="track">
-${t.images.map(i=>`<img class="slide" src="${i}">`).join("")}
-</div>
-<button class="next">›</button>
-</div>
-<div class="tour-body">
-<h3>${t.name}</h3>
-<div class="tour-footer">
-<strong>€${t.price}</strong>
-<a href="#" onclick="openDetail(${t.id})">Ətraflı</a>
-</div>
-</div>
-`;
-const track=card.querySelector(".track");
-card.querySelector(".next").onclick=()=>{slide=(slide+1)%t.images.length;track.style.transform=`translateX(-${slide*100}%)`};
-card.querySelector(".prev").onclick=()=>{slide=(slide-1+t.images.length)%t.images.length;track.style.transform=`translateX(-${slide*100}%)`};
-toursEl.appendChild(card);
-});
+            <!-- Card 5: Lankaran -->
+            <div class="tour-card bg-white rounded-2xl overflow-hidden border border-slate-100 flex flex-col group">
+                <div class="relative overflow-hidden h-56 tour-image-container">
+                    <img src="https://images.unsplash.com/photo-1540206276207-3af23c080ba8?auto=format&fit=crop&q=80&w=800" alt="Lankaran" class="w-full h-full object-cover">
+                    <button class="absolute top-4 right-4 bg-white w-9 h-9 rounded-full flex items-center justify-center text-slate-400 hover:text-red-500 shadow-md transition-all">
+                        <i class="fa-regular fa-heart"></i>
+                    </button>
+                </div>
+                <div class="p-6 flex-grow flex flex-col">
+                    <h3 class="text-lg font-bold text-slate-900 leading-snug mb-3 min-h-[56px]">Full-Day Lankaran Excursion – Culture, History & Scenic Views</h3>
+                    <div class="space-y-2 mb-6 text-sm text-slate-500">
+                        <div class="flex items-center">
+                            <i class="fa-solid fa-leaf w-5 text-blue-500"></i>
+                            <span>Nature & Heritage</span>
+                        </div>
+                    </div>
+                    <div class="mt-auto">
+                        <div class="flex items-end justify-between mb-4">
+                            <div>
+                                <div class="text-xs font-semibold text-blue-600 mb-1 uppercase tracking-tight">Top Rated Choice</div>
+                                <p class="text-sm font-bold text-slate-900">$71 <span class="text-slate-400 font-normal">/ person</span></p>
+                            </div>
+                            <a href="https://wa.me/994708680970" target="_blank" class="btn-whatsapp px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2">
+                                <i class="fa-brands fa-whatsapp text-lg"></i> Reserve
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-function openDetail(id){
-const t=tours.find(x=>x.id===id);
-detail.style.display="block";
-detail.innerHTML=`
-<h1>${t.name}</h1>
-<div class="booking">
-<p>Qiymət: €${t.price}</p>
-<button class="book-btn" onclick="book('${t.name}')">WhatsApp ilə rezerv et</button>
-</div>
-`;
-window.scrollTo(0,0);
-}
+            <!-- Card 6: Gabala -->
+            <div class="tour-card bg-white rounded-2xl overflow-hidden border border-slate-100 flex flex-col group">
+                <div class="relative overflow-hidden h-56 tour-image-container">
+                    <img src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?auto=format&fit=crop&q=80&w=800" alt="Gabala" class="w-full h-full object-cover">
+                    <button class="absolute top-4 right-4 bg-white w-9 h-9 rounded-full flex items-center justify-center text-slate-400 hover:text-red-500 shadow-md transition-all">
+                        <i class="fa-regular fa-heart"></i>
+                    </button>
+                </div>
+                <div class="p-6 flex-grow flex flex-col">
+                    <h3 class="text-lg font-bold text-slate-900 leading-snug mb-3 min-h-[56px]">The Magic of Gabala – Nature and History</h3>
+                    <div class="space-y-2 mb-6 text-sm text-slate-500">
+                        <div class="flex items-center">
+                            <i class="fa-solid fa-water w-5 text-blue-500"></i>
+                            <span>Waterfalls & Lakes</span>
+                        </div>
+                    </div>
+                    <div class="mt-auto">
+                        <div class="flex items-end justify-between mb-4">
+                            <div>
+                                <div class="flex items-center gap-1 mb-1">
+                                    <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+                                    <span class="text-sm font-bold text-slate-900">5.0</span>
+                                    <span class="text-xs text-slate-400">(128)</span>
+                                </div>
+                                <p class="text-sm font-bold text-slate-900">From $42 <span class="text-slate-400 font-normal">/ person</span></p>
+                            </div>
+                            <a href="https://wa.me/994708680970" target="_blank" class="btn-whatsapp px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2">
+                                <i class="fa-brands fa-whatsapp text-lg"></i> Reserve
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-function book(name){
-const text=encodeURIComponent(`Salam! "${name}" turu üçün rezervasiya etmək istəyirəm.`);
-window.open(`https://wa.me/994708680970?text=${text}`,"_blank");
-}
-</script>
+        </div>
+
+        <div class="flex justify-center mt-16 pb-12">
+            <button class="px-10 py-4 border-2 border-slate-900 rounded-xl font-bold text-slate-900 hover:bg-slate-900 hover:text-white transition-all transform active:scale-95">
+                Load more Baku tours
+            </button>
+        </div>
+    </main>
+
+    <!-- Subscription -->
+    <section class="bg-slate-950 py-20 relative overflow-hidden">
+        <div class="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-500 via-transparent to-transparent"></div>
+        <div class="max-w-4xl mx-auto px-4 text-center relative z-10">
+            <h2 class="text-3xl md:text-4xl font-extrabold text-white mb-4">Get personalized travel inspiration & exclusive deals</h2>
+            <p class="text-slate-400 mb-10 text-lg">Join 10,000+ travelers exploring Azerbaijan with Baku Tour Shop.</p>
+            <form class="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto" onsubmit="event.preventDefault();">
+                <input type="email" placeholder="Enter your email" class="flex-grow px-6 py-4 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" required>
+                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-xl font-bold shadow-lg shadow-blue-900/40 transition-all">Subscribe</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-100 py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-10 mb-16">
+                <div class="col-span-2 lg:col-span-1">
+                    <span class="text-xl font-extrabold text-slate-900">Baku<span class="text-blue-600">Tour</span>Shop</span>
+                    <p class="mt-4 text-sm text-slate-500 leading-relaxed">The premier choice for authentic Azerbaijani experiences. Licensed, local, and reliable.</p>
+                </div>
+                <div>
+                    <h4 class="text-slate-900 font-bold mb-5 uppercase text-[11px] tracking-widest">Support</h4>
+                    <ul class="space-y-3 text-sm font-medium text-slate-500">
+                        <li><a href="#" class="hover:text-blue-600">Contact</a></li>
+                        <li><a href="#" class="hover:text-blue-600">Legal Notice</a></li>
+                        <li><a href="#" class="hover:text-blue-600">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-slate-900 font-bold mb-5 uppercase text-[11px] tracking-widest">Company</h4>
+                    <ul class="space-y-3 text-sm font-medium text-slate-500">
+                        <li><a href="#" class="hover:text-blue-600">About Us</a></li>
+                        <li><a href="#" class="hover:text-blue-600">Careers</a></li>
+                        <li><a href="#" class="hover:text-blue-600">Blog</a></li>
+                    </ul>
+                </div>
+                <div class="col-span-2 md:col-span-1">
+                    <h4 class="text-slate-900 font-bold mb-5 uppercase text-[11px] tracking-widest">Find Us</h4>
+                    <div class="flex space-x-5">
+                        <a href="#" class="text-slate-400 hover:text-blue-600 text-lg transition-colors"><i class="fa-brands fa-facebook"></i></a>
+                        <a href="#" class="text-slate-400 hover:text-blue-600 text-lg transition-colors"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" class="text-slate-400 hover:text-blue-600 text-lg transition-colors"><i class="fa-brands fa-whatsapp"></i></a>
+                        <a href="#" class="text-slate-400 hover:text-blue-600 text-lg transition-colors"><i class="fa-brands fa-tripadvisor"></i></a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="pt-8 border-t border-slate-50 flex flex-col md:flex-row justify-between items-center text-[12px] font-medium text-slate-400">
+                <p>&copy; 2008 – 2026 Baku Tour Shop. Made in Zurich & Berlin</p>
+                <div class="mt-4 md:mt-0 flex gap-6">
+                    <span class="flex items-center gap-1"><i class="fa-solid fa-shield-halved text-green-500"></i> Secure Payment</span>
+                    <span class="flex items-center gap-1"><i class="fa-solid fa-certificate text-blue-500"></i> Licensed Operator</span>
+                </div>
+            </div>
+        </div>
+    </footer>
 
 </body>
 </html>
