@@ -1105,52 +1105,157 @@
         </div>
     </section>
 
-    <!-- Blog Section -->
-    <section class="blog" id="blog">
-        <div class="blog-container">
-            <div class="section-header">
-                <h2>Travel Guides & Tips</h2>
-                <p>Discover the best of Azerbaijan through our expert guides</p>
+   <!-- Blog Section -->
+<section class="blog" id="blog">
+    <div class="blog-container">
+        <div class="section-header">
+            <h2>Travel Guides & Tips</h2>
+            <p>Discover the best of Azerbaijan through our expert guides</p>
+        </div>
+        
+        <div class="blog-grid">
+            <!-- 1. Baku Places - İçərişəhər mənzərəsi -->
+            <div class="blog-card">
+                <div class="blog-image">
+                    <img src="https://images.unsplash.com/photo-1527359443443-84a18a05d246?q=80&w=800&auto=format&fit=crop" alt="Bakı mənzərəsi, İçərişəhər">
+                    <div class="blog-date">Feb 8, 2026</div>
+                </div>
+                <div class="blog-content">
+                    <div class="blog-category">Travel Guide</div>
+                    <h3>10 places to see in Baku</h3>
+                    <p class="blog-excerpt">Baku, the capital of Azerbaijan, attracts millions of tourists every year with its historical monuments, modern architecture and rich culture. Explore the Old City, Flame Towers, Seaside National Park and other famous attractions...</p>
+                    <a href="blog.html" class="read-more">Read more →</a>
+                </div>
             </div>
-            <div class="blog-grid">
-                <div class="blog-card">
-                    <div class="blog-image">
-                        <div class="blog-date">Feb 8, 2026</div>
-                    </div>
-                    <div class="blog-content">
-                        <div class="blog-category">Travel Guide</div>
-                        <h3>10 places to see in Baku</h3>
-                        <p class="blog-excerpt">Baku, the capital of Azerbaijan, attracts millions of tourists every year with its historical monuments, modern architecture and rich culture. Explore the Old City, Flame Towers, Seaside National Park and other famous attractions...</p>
-                        <a href="blog.html" class="read-more">Read more →</a>
-                    </div>
-                </div>
 
-                <div class="blog-card">
-                    <div class="blog-image">
-                        <div class="blog-date">Feb 5, 2026</div>
-                    </div>
-                    <div class="blog-content">
-                        <div class="blog-category">Food & Culture</div>
-                        <h3>Azerbaijani cuisine guide</h3>
-                        <p class="blog-excerpt">Azerbaijani cuisine occupies a special place among world cuisines with its taste and diversity. Get to know our traditional dishes such as pilaf, dolma, qutab, shekerbura and others. There is a history behind every dish...</p>
-                        <a href="blog.html" class="read-more">Read more →</a>
-                    </div>
+            <!-- 2. Azerbaijani Cuisine - Dolma (Food) -->
+            <div class="blog-card">
+                <div class="blog-image">
+                    <img src="https://images.unsplash.com/photo-1547928576-a4a33237ecd3?q=80&w=800&auto=format&fit=crop" alt="Azərbaycan yeməyi Dolma">
+                    <div class="blog-date">Feb 5, 2026</div>
                 </div>
+                <div class="blog-content">
+                    <div class="blog-category">Food & Culture</div>
+                    <h3>Azerbaijani cuisine guide</h3>
+                    <p class="blog-excerpt">Azerbaijani cuisine occupies a special place among world cuisines with its taste and diversity. Get to know our traditional dishes such as pilaf, dolma, qutab, shekerbura and others. There is a history behind every dish...</p>
+                    <a href="blog.html" class="read-more">Read more →</a>
+                </div>
+            </div>
 
-                <div class="blog-card">
-                    <div class="blog-image">
-                        <div class="blog-date">Feb 1, 2026</div>
-                    </div>
-                    <div class="blog-content">
-                        <div class="blog-category">Photography</div>
-                        <h3>Best photo spots</h3>
-                        <p class="blog-excerpt">Discover the most Instagrammable photo spots in Baku. Panoramic views of the city from Highland Park, the night illumination of the Flame Towers, Little Venice, and the narrow streets of the Old City will amaze you....</p>
-                        <a href="blog.html" class="read-more">Read more →</a>
-                    </div>
+            <!-- 3. Photo Spots - Turist və Bakı mənzərəsi -->
+            <div class="blog-card">
+                <div class="blog-image">
+                    <img src="https://images.unsplash.com/photo-1544275193-271790f421f2?q=80&w=800&auto=format&fit=crop" alt="Bakıda şəkil çəkdirən bir nəfər">
+                    <div class="blog-date">Feb 1, 2026</div>
+                </div>
+                <div class="blog-content">
+                    <div class="blog-category">Photography</div>
+                    <h3>Best photo spots</h3>
+                    <p class="blog-excerpt">Discover the most Instagrammable photo spots in Baku. Panoramic views of the city from Highland Park, the night illumination of the Flame Towers, Little Venice, and the narrow streets of the Old City will amaze you....</p>
+                    <a href="blog.html" class="read-more">Read more →</a>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+
+    <!-- Dizayn Tənzimləmələri -->
+    <style>
+        .blog-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .section-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        .section-header h2 {
+            font-size: 2.8rem;
+            color: #1a1a1a;
+            margin-bottom: 15px;
+        }
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+        }
+        .blog-card {
+            background: #ffffff;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid #f0f0f0;
+        }
+        .blog-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+        .blog-image {
+            position: relative;
+            height: 250px;
+            overflow: hidden;
+        }
+        .blog-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s ease;
+        }
+        .blog-card:hover .blog-image img {
+            transform: scale(1.15);
+        }
+        .blog-date {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #e67e22;
+            color: #fff;
+            padding: 8px 18px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            z-index: 10;
+        }
+        .blog-content {
+            padding: 30px;
+        }
+        .blog-category {
+            color: #e67e22;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            margin-bottom: 12px;
+        }
+        .blog-content h3 {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            line-height: 1.3;
+        }
+        .blog-excerpt {
+            color: #5d6d7e;
+            font-size: 0.95rem;
+            line-height: 1.8;
+            margin-bottom: 25px;
+        }
+        .read-more {
+            color: #2c3e50;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            transition: color 0.3s;
+        }
+        .read-more:hover {
+            color: #e67e22;
+        }
+    </style>
+</section>
 
     <!-- Contact Section -->
     <section class="contact" id="contact">
