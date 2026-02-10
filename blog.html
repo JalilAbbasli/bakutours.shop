@@ -1,146 +1,231 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Blog | Baku Tours Shop</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Blog Section -->
+<section class="blog" id="blog">
+    <!-- Hero Header with Caspian Sea Background -->
+    <div class="blog-hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1>Azerbaijan Travel Guide & Insights</h1>
+            <p>Deep dives into the history, culture, and hidden gems of the Land of Fire. Expertly curated for the modern traveler.</p>
+        </div>
+    </div>
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <div class="blog-container">
+        <div class="blog-list">
+            <!-- 1. Baku Places -->
+            <article class="blog-item">
+                <div class="blog-image">
+                    <img src="images/baku-city.jpg" alt="Baku City Sightseeing Tour" onerror="this.src='https://images.unsplash.com/photo-1527359443443-84a18a05d246?q=80&w=800&auto=format&fit=crop'">
+                </div>
+                <div class="blog-content">
+                    <div class="blog-category">Baku Tourism</div>
+                    <h3>Top Cultural Landmarks and Modern Marvels in Baku</h3>
+                    <p>Baku, the vibrant capital of Azerbaijan, is a city where <strong>ancient history</strong> seamlessly blends with <strong>futuristic architecture</strong>. Often referred to as the "Paris of the East," Baku offers a unique experience for every traveler. Your journey should begin in <strong>Icherisheher (Old City)</strong>, a UNESCO World Heritage site.</p>
+                </div>
+            </article>
+
+            <!-- 2. Dolma & Cuisine -->
+            <article class="blog-item reverse">
+                <div class="blog-image">
+                    <img src="images/dolma.jpg" alt="Traditional Azerbaijani Cuisine Dolma" onerror="this.src='https://images.unsplash.com/photo-1623594830728-97305963b62b?q=80&w=800&auto=format&fit=crop'">
+                </div>
+                <div class="blog-content">
+                    <div class="blog-category">Gastronomy</div>
+                    <h3>Exploring Azerbaijani Cuisine: The Tradition and Taste of Dolma</h3>
+                    <p>Azerbaijan’s culinary heritage is a feast for the senses, and <strong>Dolma</strong> stands as its undisputed crown jewel. In 2017, Azerbaijan’s tradition of making and sharing dolma was inscribed on the <strong>UNESCO Intangible Cultural Heritage</strong> list.</p>
+                </div>
+            </article>
+
+            <!-- 3. Gabala Nature -->
+            <article class="blog-item">
+                <div class="blog-image">
+                    <img src="images/gabala.jpg" alt="Gabala Nature and Tufandag Resort" onerror="this.src='https://images.unsplash.com/photo-1580193496511-949439169647?q=80&w=800&auto=format&fit=crop'">
+                </div>
+                <div class="blog-content">
+                    <div class="blog-category">Nature & Adventure</div>
+                    <h3>Gabala: A Natural Paradise in the Greater Caucasus</h3>
+                    <p>Known as the "Switzerland of Azerbaijan," <strong>Gabala (Qabala)</strong> is the ultimate destination for those seeking fresh mountain air and breathtaking landscapes.</p>
+                </div>
+            </article>
+
+            <!-- 4. Gobustan -->
+            <article class="blog-item reverse">
+                <div class="blog-image">
+                    <img src="images/gobustan.jpg" alt="Gobustan Rock Art and Mud Volcanoes Tour" onerror="this.src='https://images.unsplash.com/photo-1658485295251-51216d64483a?q=80&w=800&auto=format&fit=crop'">
+                </div>
+                <div class="blog-content">
+                    <div class="blog-category">Archeology</div>
+                    <h3>Gobustan: A Journey Through Prehistoric Rock Art</h3>
+                    <p><strong>Gobustan State Historical-Artistic Reserve</strong> is a world-renowned archaeological site that serves as a massive open-air museum. It is home to more than <strong>6,000 petroglyphs</strong>.</p>
+                </div>
+            </article>
+
+            <!-- 5. Sheki Heritage -->
+            <article class="blog-item">
+                <div class="blog-image">
+                    <img src="images/sheki.jpg" alt="Sheki Khans Palace UNESCO Site" onerror="this.src='https://images.unsplash.com/photo-1551918120-9739cb430c6d?q=80&w=800&auto=format&fit=crop'">
+                </div>
+                <div class="blog-content">
+                    <div class="blog-category">Historic Cities</div>
+                    <h3>Sheki: The Architectural Jewel of the Silk Road</h3>
+                    <p>The historic city of <strong>Sheki</strong> is a living testament to the legacy of the <strong>Great Silk Road</strong>. Recently added to the UNESCO World Heritage list, Sheki is famous for its unique architecture.</p>
+                </div>
+            </article>
+        </div>
+    </div>
 
     <style>
-        body {
-            font-family: Inter, sans-serif;
+        .blog {
+            background-color: #fcfcfc;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
-            background: #ffffff;
-            color: #333;
-            line-height: 1.7;
+            padding: 0;
         }
 
-        header {
-            background: #1A2B49;
-            padding: 20px;
+        /* Hero Header Style */
+        .blog-hero {
+            position: relative;
+            height: 450px;
+            /* DİQQƏT: Lokal şəkil yolu bura yazılır */
+            background-image: url('images/caspian-sea.jpg'); 
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             text-align: center;
-        }
-
-        header a {
             color: #fff;
-            text-decoration: none;
-            font-weight: 800;
-            font-size: 1.5rem;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 60px auto;
-            padding: 0 20px;
-        }
-
-        article {
             margin-bottom: 80px;
         }
 
-        article img {
+        /* Əgər yuxarıdakı şəkil tapılmasa, bu ikinci variant (fallback) işə düşəcək:
+           background-image: url('images/caspian-sea.jpg'), url('https://images.unsplash.com/photo-1589139200384-5f40356c9a92?q=80&w=1600&auto=format&fit=crop'); 
+        */
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
-            border-radius: 12px;
-            margin-bottom: 20px;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
         }
 
-        .meta {
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            padding: 0 20px;
+        }
+
+        .hero-content h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .hero-content p {
+            font-size: 1.25rem;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .blog-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px 100px 20px;
+        }
+        
+        .blog-list {
+            display: flex;
+            flex-direction: column;
+            gap: 120px;
+        }
+        
+        .blog-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 60px;
+        }
+        
+        .blog-item.reverse {
+            flex-direction: row-reverse;
+        }
+        
+        .blog-image {
+            flex: 1;
+            height: 450px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 20px;
+            background: #eee;
+        }
+        
+        .blog-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .blog-item:hover .blog-image img {
+            transform: scale(1.05);
+        }
+        
+        .blog-content {
+            flex: 1.2;
+        }
+        
+        .blog-category {
+            color: #e67e22;
+            font-weight: 700;
             font-size: 0.85rem;
-            color: #777;
-            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
         }
-
-        h1 {
+        
+        .blog-content h3 {
             font-size: 2.2rem;
-            color: #1A2B49;
-            margin-bottom: 20px;
+            color: #1a1a1a;
+            margin-bottom: 25px;
+            line-height: 1.2;
+            font-weight: 800;
         }
-
-        p {
-            margin-bottom: 18px;
+        
+        .blog-content p {
+            color: #555;
+            line-height: 1.8;
             font-size: 1.05rem;
+            margin-bottom: 20px;
+            text-align: justify;
         }
-
-        .back {
-            display: inline-block;
-            margin-top: 20px;
-            color: #FF5533;
+        
+        .blog-content strong {
+            color: #222;
             font-weight: 600;
-            text-decoration: none;
         }
-
-        footer {
-            background: #1A2B49;
-            color: #fff;
-            text-align: center;
-            padding: 30px;
-            margin-top: 60px;
-            font-size: 0.9rem;
+        
+        @media (max-width: 992px) {
+            .blog-hero { height: 350px; }
+            .hero-content h1 { font-size: 2.5rem; }
+            .blog-item, .blog-item.reverse {
+                flex-direction: column;
+                gap: 30px;
+            }
+            .blog-image {
+                width: 100%;
+                height: 350px;
+                position: static;
+            }
+            .blog-content h3 {
+                font-size: 1.8rem;
+            }
+            .blog-list {
+                gap: 80px;
+            }
         }
     </style>
-</head>
-
-<body>
-
-<header>
-    <a href="index.html">← Back to Baku Tours Shop</a>
-</header>
-
-<div class="container">
-
-    <!-- BLOG 1 -->
-    <article>
-        <img src="https://images.unsplash.com/photo-1583422409516-2895a77efded" alt="Baku city view">
-        <div class="meta">Travel Guide · Feb 8, 2026</div>
-        <h1>Top 10 Places to Visit in Baku</h1>
-
-        <p>Baku, the capital of Azerbaijan, is a fascinating blend of ancient history and modern architecture. Located on the shores of the Caspian Sea, the city offers unique cultural experiences for every traveler.</p>
-
-        <p>Start your journey in the Old City (Icherisheher), a UNESCO World Heritage Site filled with narrow streets, historic mosques, and the iconic Maiden Tower. Walking here feels like stepping back in time.</p>
-
-        <p>Next, visit the Flame Towers — Baku’s modern symbol. These skyscrapers light up the skyline at night and offer stunning views of the city.</p>
-
-        <p>Other must-see spots include the Baku Boulevard, Highland Park, Heydar Aliyev Center, Little Venice, and the vibrant Nizami Street.</p>
-
-        <p>Baku is a city where tradition meets innovation, making it a perfect destination for culture lovers, photographers, and adventure seekers.</p>
-    </article>
-
-    <!-- BLOG 2 -->
-    <article>
-        <img src="https://images.unsplash.com/photo-1604908176997-125f25cc6f3d" alt="Azerbaijani cuisine">
-        <div class="meta">Food & Culture · Feb 5, 2026</div>
-        <h1>A Complete Guide to Azerbaijani Cuisine</h1>
-
-        <p>Azerbaijani cuisine reflects the country’s rich history and diverse regions. It is known for its aromatic spices, fresh herbs, and slow-cooked dishes.</p>
-
-        <p>Plov is the national dish and comes in dozens of variations. Each region prepares it differently, often with saffron rice, dried fruits, nuts, or meat.</p>
-
-        <p>Dolma, qutab, kebabs, and piti soup are also essential parts of local cuisine. Meals are usually enjoyed with fresh herbs, yogurt-based sauces, and traditional bread.</p>
-
-        <p>No meal is complete without tea. Azerbaijani tea culture is deeply rooted in hospitality and is often served with jam rather than sugar.</p>
-    </article>
-
-    <!-- BLOG 3 -->
-    <article>
-        <img src="https://images.unsplash.com/photo-1549880338-65ddcdfd017b" alt="Baku photography spots">
-        <div class="meta">Photography · Feb 1, 2026</div>
-        <h1>The Best Photo Spots in Baku</h1>
-
-        <p>Baku is one of the most photogenic cities in the Caucasus. Its mix of old stone architecture and futuristic buildings offers endless photography opportunities.</p>
-
-        <p>Highland Park provides panoramic views of the city and the Caspian Sea, especially beautiful at sunset. The Flame Towers look stunning when photographed at night.</p>
-
-        <p>The Old City is perfect for street photography, while the Heydar Aliyev Center offers clean lines and modern design for architectural shots.</p>
-
-        <p>Whether you are a professional photographer or just taking photos for social media, Baku will not disappoint.</p>
-    </article>
-
-</div>
-
-<footer>
-    © 2026 Baku Tours Shop · All rights reserved
-</footer>
-
-</body>
-</html>
+</section>
