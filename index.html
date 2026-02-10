@@ -234,14 +234,16 @@
             border-radius: 12px;
             overflow: hidden;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
+            transition: all 0.4s ease;
             cursor: pointer;
             border: 1px solid var(--medium-grey);
+            position: relative;
         }
 
         .tour-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            transform: translateY(-8px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+            z-index: 10;
         }
 
         .tour-image-slider {
@@ -353,6 +355,7 @@
 
         .tour-content {
             padding: 1.25rem;
+            position: relative;
         }
 
         .tour-content h3 {
@@ -397,6 +400,34 @@
             gap: 0.3rem;
         }
 
+        /* Tour Description Overlay */
+        .tour-description {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(26, 43, 73, 0.95);
+            color: var(--white);
+            padding: 1.5rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-radius: 0 0 12px 12px;
+        }
+
+        .tour-card:hover .tour-description {
+            opacity: 1;
+        }
+
+        .tour-description p {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: var(--white);
+        }
+
         .tour-price-section {
             display: flex;
             justify-content: space-between;
@@ -428,11 +459,205 @@
             font-weight: 600;
         }
 
+        /* Blog Section */
+        .blog {
+            padding: 4rem 2rem;
+            background: var(--light-grey);
+        }
+
+        .blog-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .blog-card {
+            background: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .blog-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        .blog-image {
+            height: 220px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+        }
+
+        .blog-card:nth-child(1) .blog-image {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .blog-card:nth-child(2) .blog-image {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .blog-card:nth-child(3) .blog-image {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+
+        .blog-date {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: var(--white);
+            color: var(--primary-navy);
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .blog-content {
+            padding: 1.5rem;
+        }
+
+        .blog-category {
+            color: var(--primary-orange);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+
+        .blog-content h3 {
+            font-size: 1.3rem;
+            color: var(--primary-navy);
+            margin-bottom: 0.75rem;
+            line-height: 1.4;
+        }
+
+        .blog-excerpt {
+            color: var(--dark-grey);
+            opacity: 0.8;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .read-more {
+            color: var(--primary-orange);
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: gap 0.2s ease;
+        }
+
+        .read-more:hover {
+            gap: 0.75rem;
+        }
+
+        /* Contact Section */
+        .contact {
+            padding: 4rem 2rem;
+            background: var(--primary-navy);
+            color: var(--white);
+        }
+
+        .contact-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .contact-container h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .contact-container p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 2.5rem;
+        }
+
+        .contact-methods {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        .contact-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1.5rem 2rem;
+            border-radius: 12px;
+            min-width: 280px;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .contact-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: var(--primary-orange);
+            transform: translateY(-4px);
+        }
+
+        .contact-icon {
+            font-size: 2rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .contact-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 0.5rem;
+        }
+
+        .contact-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .contact-value a {
+            color: var(--white);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .contact-value a:hover {
+            color: var(--primary-orange);
+        }
+
+        .whatsapp-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: #25D366;
+            color: var(--white);
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .whatsapp-btn:hover {
+            background: #20ba5a;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(37, 211, 102, 0.3);
+        }
+
         /* Why Choose Section */
         .why-choose {
-            background: var(--primary-navy);
+            background: var(--white);
             padding: 4rem 2rem;
-            color: var(--white);
         }
 
         .why-choose-container {
@@ -445,6 +670,7 @@
             font-size: 2rem;
             margin-bottom: 3rem;
             font-weight: 800;
+            color: var(--primary-navy);
         }
 
         .features-grid {
@@ -473,10 +699,11 @@
             font-size: 1.2rem;
             margin-bottom: 0.75rem;
             font-weight: 700;
+            color: var(--primary-navy);
         }
 
         .feature-item p {
-            opacity: 0.85;
+            opacity: 0.8;
             line-height: 1.6;
         }
 
@@ -613,8 +840,13 @@
                 width: 100%;
             }
 
-            .tour-grid {
+            .tour-grid,
+            .blog-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .contact-methods {
+                flex-direction: column;
             }
 
             .newsletter-form {
@@ -633,8 +865,8 @@
             <a href="#" class="logo">Baku Tours Shop</a>
             <ul class="nav-links">
                 <li><a href="#tours">Things to do</a></li>
-                <li><a href="#about">Attractions</a></li>
-                <li><a href="#contact">Day Trips</a></li>
+                <li><a href="#blog">Blog</a></li>
+                <li><a href="#contact">Contact</a></li>
                 <li><button class="nav-sign-in">Sign in</button></li>
             </ul>
         </div>
@@ -704,6 +936,9 @@
                         </div>
                         <div class="free-cancellation">Free cancellation</div>
                     </div>
+                    <div class="tour-description">
+                        <p>Experience a one-of-a-kind peaceful canoe adventure on the Caspian Sea in Baku. Glide along the shore, take in stunning coastal views, and unwind with a calm getaway from the city's busy atmosphere.</p>
+                    </div>
                 </div>
             </div>
 
@@ -740,6 +975,9 @@
                             <span class="price-amount">$9</span>
                         </div>
                         <div class="free-cancellation">Free cancellation</div>
+                    </div>
+                    <div class="tour-description">
+                        <p>Discover the charm of Baku at dusk on a guided walking tour through its historic streets and modern boulevards. As the sun sets over the Caspian Sea, enjoy breathtaking panoramic views from the city's funicular ride to Highland Park.</p>
                     </div>
                 </div>
             </div>
@@ -779,6 +1017,9 @@
                         </div>
                         <div class="free-cancellation">Free cancellation</div>
                     </div>
+                    <div class="tour-description">
+                        <p>Step back in time as you explore the winding streets of Baku's Old City, a UNESCO World Heritage site filled with ancient walls, mosques, and caravanserais. Discover the charming Monument to Lovers and Cats along the way.</p>
+                    </div>
                 </div>
             </div>
 
@@ -815,6 +1056,9 @@
                             <span class="price-amount">$65</span>
                         </div>
                         <div class="free-cancellation">Free cancellation</div>
+                    </div>
+                    <div class="tour-description">
+                        <p>Experience the thrill of horseback riding in the peaceful nature of Mashtaga. Learn to ride a horse, capture the moment with photos, and enjoy a cup of traditional samovar tea after your ride.</p>
                     </div>
                 </div>
             </div>
@@ -853,8 +1097,96 @@
                         </div>
                         <div class="free-cancellation">Free cancellation</div>
                     </div>
+                    <div class="tour-description">
+                        <p>Discover Baku's modern landmarks on a free morning walking tour. See the Crescent Mall, Victory Park, and White City Boulevard with an experienced local guide who knows the city inside out.</p>
+                    </div>
                 </div>
             </div>
+        </div>
+    </section>
+
+    <!-- Blog Section -->
+    <section class="blog" id="blog">
+        <div class="blog-container">
+            <div class="section-header">
+                <h2>Travel Guides & Tips</h2>
+                <p>Discover the best of Azerbaijan through our expert guides</p>
+            </div>
+            <div class="blog-grid">
+                <div class="blog-card">
+                    <div class="blog-image">
+                        <div class="blog-date">Feb 8, 2026</div>
+                    </div>
+                    <div class="blog-content">
+                        <div class="blog-category">Travel Guide</div>
+                        <h3>Bakıda görməli 10 yer</h3>
+                        <p class="blog-excerpt">Azərbaycanın paytaxtı Bakı tarixi abidələri, müasir memarlığı və zəngin mədəniyyəti ilə hər il milyonlarla turisti cəlb edir. İçərişəhər, Flame Towers, Dənizkənarı Milli Park və digər məşhur yerləri kəşf edin...</p>
+                        <a href="#" class="read-more">Read more →</a>
+                    </div>
+                </div>
+
+                <div class="blog-card">
+                    <div class="blog-image">
+                        <div class="blog-date">Feb 5, 2026</div>
+                    </div>
+                    <div class="blog-content">
+                        <div class="blog-category">Food & Culture</div>
+                        <h3>Azərbaycan mətbəxi guide</h3>
+                        <p class="blog-excerpt">Azərbaycan mətbəxi öz dadı və rəngarəngliyi ilə dünya mətbəxləri arasında xüsusi yer tutur. Plov, dolma, qutab, şəkərbura və digər ənənəvi yeməklərimizlə tanış olun. Hər yeməyin arxasında bir tarix var...</p>
+                        <a href="#" class="read-more">Read more →</a>
+                    </div>
+                </div>
+
+                <div class="blog-card">
+                    <div class="blog-image">
+                        <div class="blog-date">Feb 1, 2026</div>
+                    </div>
+                    <div class="blog-content">
+                        <div class="blog-category">Photography</div>
+                        <h3>Ən yaxşı foto spot-lar</h3>
+                        <p class="blog-excerpt">Bakıda Instagram-a uyğun ən gözəl foto məkanlarını kəşf edin. Highland Park-dan şəhərin panoramik görünüşü, Flame Towers gecə işıqlandırması, Little Venice, və Old City-nin dar küçələri sizi heyran edəcək...</p>
+                        <a href="#" class="read-more">Read more →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact" id="contact">
+        <div class="contact-container">
+            <h2>Get in Touch</h2>
+            <p>Ready to explore Baku? Contact us and let's plan your perfect adventure!</p>
+            
+            <div class="contact-methods">
+                <div class="contact-item">
+                    <div class="contact-icon">📧</div>
+                    <div class="contact-label">Email Us</div>
+                    <div class="contact-value">
+                        <a href="mailto:info@bakutours.shop">info@bakutours.shop</a>
+                    </div>
+                </div>
+
+                <div class="contact-item">
+                    <div class="contact-icon">📱</div>
+                    <div class="contact-label">Call Us</div>
+                    <div class="contact-value">
+                        <a href="tel:+994708680970">+994 70 868 09 70</a>
+                    </div>
+                </div>
+
+                <div class="contact-item">
+                    <div class="contact-icon">💬</div>
+                    <div class="contact-label">WhatsApp</div>
+                    <div class="contact-value">
+                        <a href="https://wa.me/994708680970">Message us on WhatsApp</a>
+                    </div>
+                </div>
+            </div>
+
+            <a href="https://wa.me/994708680970?text=Hello! I'm interested in booking a tour in Baku" class="whatsapp-btn" target="_blank">
+                💬 Chat on WhatsApp
+            </a>
         </div>
     </section>
 
@@ -905,14 +1237,14 @@
                     <li><a href="#">About us</a></li>
                     <li><a href="#">Careers</a></li>
                     <li><a href="#">Press</a></li>
-                    <li><a href="#">Blog</a></li>
+                    <li><a href="#blog">Blog</a></li>
                 </ul>
             </div>
             <div class="footer-section">
                 <h4>Support</h4>
                 <ul>
                     <li><a href="#">Help Center</a></li>
-                    <li><a href="#">Contact us</a></li>
+                    <li><a href="#contact">Contact us</a></li>
                     <li><a href="#">Cancellation policy</a></li>
                     <li><a href="#">Safety</a></li>
                 </ul>
