@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - Baku Tours Shop</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-navy: #1A2B49;
+            --primary-orange: #FF5533;
+            --light-grey: #F5F5F5;
+            --medium-grey: #E0E0E0;
+            --dark-grey: #333333;
+            --white: #FFFFFF;
+            --hover-orange: #E64422;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--dark-grey);
+            background: var(--white);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Contact Header */
+        .contact-header {
+            padding: 4rem 0 3rem;
+            background: var(--light-grey);
+            text-align: center;
+        }
+
+        .contact-header h1 {
+            font-size: 3rem;
+            color: var(--primary-navy);
+            margin-bottom: 1rem;
+            font-weight: 800;
+        }
+
+        .contact-header p {
+            font-size: 1.1rem;
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Contact Content Layout */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 4rem;
+            padding: 4rem 0;
+        }
+
+        /* Info Cards */
+        .info-item {
+            margin-bottom: 2.5rem;
+            display: flex;
+            gap: 1.5rem;
+            align-items: flex-start;
+        }
+
+        .icon-box {
+            background: rgba(255, 85, 51, 0.1);
+            padding: 1rem;
+            border-radius: 12px;
+            color: var(--primary-orange);
+            font-size: 1.5rem;
+            min-width: 55px;
+            text-align: center;
+        }
+
+        .info-text h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary-navy);
+            font-weight: 700;
+        }
+
+        .info-text p, .info-text a {
+            color: #555;
+            text-decoration: none;
+            font-size: 1rem;
+            display: block;
+        }
+
+        .info-text a:hover {
+            color: var(--primary-orange);
+        }
+
+        /* Contact Form */
+        .contact-form-wrapper {
+            background: var(--white);
+            padding: 3rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            border: 1px solid var(--medium-grey);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid var(--medium-grey);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-orange);
+        }
+
+        textarea.form-control {
+            height: 150px;
+            resize: vertical;
+        }
+
+        .submit-btn {
+            background: var(--primary-orange);
+            color: var(--white);
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.2s;
+        }
+
+        .submit-btn:hover {
+            background: var(--hover-orange);
+        }
+
+        /* Map Section */
+        .map-section {
+            height: 450px;
+            width: 100%;
+            margin-top: 2rem;
+            background: #eee;
+            position: relative;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--primary-navy);
+            color: var(--white);
+            padding: 2.5rem 0;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+            .contact-header h1 {
+                font-size: 2.2rem;
+            }
+            .contact-form-wrapper {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Section -->
+    <section class="contact-header">
+        <div class="container">
+            <h1>Get in Touch</h1>
+            <p>The Baku Tours Shop team is here to help. Have a question or a special request for your trip?</p>
+        </div>
+    </section>
+
+    <!-- Contact Content Section -->
+    <section class="container">
+        <div class="contact-grid">
+            
+            <!-- Contact Details -->
+            <div class="contact-info">
+                <div class="info-item">
+                    <div class="icon-box">📍</div>
+                    <div class="info-text">
+                        <h3>Our Location</h3>
+                        <p>Old City (Icherisheher)<br>Baku, Azerbaijan</p>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="icon-box">📞</div>
+                    <div class="info-text">
+                        <h3>Phone Numbers</h3>
+                        <a href="tel:+994708680970">+994 70 868 09 70</a>
+                        <a href="tel:+994507100441">+994 50 710 04 41</a>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="icon-box">✉️</div>
+                    <div class="info-text">
+                        <h3>Email Address</h3>
+                        <a href="mailto:info@bakutours.shop">info@bakutours.shop</a>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="icon-box">⏰</div>
+                    <div class="info-text">
+                        <h3>Office Hours</h3>
+                        <p>Monday - Sunday<br>09:00 AM - 08:00 PM</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Message Form -->
+            <div class="contact-form-wrapper">
+                <form action="#">
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" class="form-control" placeholder="Your Name and Surname" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" class="form-control" placeholder="yourname@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Subject</label>
+                        <select class="form-control">
+                            <option>Tour Inquiry</option>
+                            <option>Booking Request</option>
+                            <option>Corporate Partnership</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Message</label>
+                        <textarea class="form-control" placeholder="How can we help you?"></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn">Send Message</button>
+                </form>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Google Map Container -->
+    <div class="map-section">
+        <!-- New Embed Code for Icherisheher, Baku -->
+        <iframe 
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3039.6305141675233!2d49.83389147648366!3d40.36162355898862!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40307d906e5728a3%3A0x86770a311894a4c1!2sOld%20City!5e0!3m2!1sen!2saz!4v1714567890123!5m2!1sen!2saz" 
+            width="100%" 
+            height="100%" 
+            style="border:0;" 
+            allowfullscreen="" 
+            loading="lazy" 
+            referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+    </div>
+
+    <!-- Footer Section -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Baku Tours Shop. All rights reserved.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
