@@ -1163,7 +1163,8 @@ grant execute on function public.admin_create_user(text, text) to authenticated;
       $$('.page').forEach((sec) => sec.classList.add('hidden'));
       const target = $(`#p_${p}`);
       if (target) target.classList.remove('hidden');
-      $$('.nav-item').forEach((btn) => btn.classList.toggle('active', btn.dataset.p === p));$('#pageTitle').textContent = TITLES[p] || 'Salon Panel';
+      $$('.nav-item').forEach((btn) => btn.classList.toggle('active', btn.dataset.p === p));
+      $('#pageTitle').textContent = TITLES[p] || 'Salon Panel';
       if (p === 'new') fillSelects();
       all();
     }
@@ -1259,4 +1260,451 @@ grant execute on function public.admin_create_user(text, text) to authenticated;
           } else if (payload.new?.id) {
             const item = { ...(payload.new.data || {}), id: payload.new.id };
             const idx = recs.findIndex((x) => x.id === item.id);
-            if (idx >= 0) recs[idx] = item; else recs.unshift(
+            if (idx >= 0) recs[idx] = item; else recs.unshift(item);
+          }
+          saveLocal();
+          all();
+        }).subscribe();
+    }
+
+    function fillSelects() {
+      const sCat = $('#sCat');
+      if (sCat) {
+        sCat.innerHTML = (state.cats || []).map((c) => `<option value="${esc(c)}">${esc(c)}</option>`).join('');
+      }
+      const rSrv = $('#rSrv');
+      if (rSrv) {
+        rSrv.innerHTML = '<option value="">Xidmət seçin</option>' +
+          (state.services || []).map((s, i) => `<option value="${i}" data-price="${s.price || 0}">${esc(s.name)} (${Number(s.price || 0).toFixed(2)} AZN)</option>`).join('');
+      }
+      const rAss = $('#rAssignee');
+      if (rAss) {
+        const opts = [
+          ...(state.staff || []).map((x) => `Əməkdaş: ${x.name}`),
+          ...(state.tenants || []).map((x) => `İcarədar: ${x.name}`)
+        ];
+        rAss.innerHTML = '<option value="">Seçilməyib</option>' + opts.map((o) => `<option value="${esc(o)}">${esc(o)}</option>`).join('');
+      }
+    }
+
+    function syncSrvPrice() {
+      const sel = $('#rSrv');
+      const opt = sel?.options[sel.selectedIndex];
+      if (opt && opt.dataset.price !== undefined) {
+        $('#rPrice').value = Number(opt.dataset.price || 0);
+      }
+    }
+
+    async function saveRez(e) {
+      e.preventDefault();
+      const srvIdx = $('#rSrv').value;
+      const srvName = srvIdx !== '' && state.services[srvIdx] ? state.services[srvIdx].name : 'Xidmət';
+      const rec = {
+        id: `${currentUser.id}_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+        cust: $('#rCust').value.trim(),
+        phone: $('#rPhone').value.trim(),
+        srv: srvName,
+        assignee: $('#rAssignee').value,
+        date: $('#rDate').value.trim() || fmtDate(),
+        time: $('#rTime').value || '12:00',
+        price: Number($('#rPrice').value || 0),
+        status: $('#rStatus').value,
+        note: $('#rNote').value.trim()
+      };
+      recs.unshift(rec);
+      logAction(`Rezervasiya əlavə edildi: ${rec.cust} (${rec.date})`);
+      await Promise.all([upsertRecordCloud(rec), syncStateCloud()]);
+      $('#fR').reset();
+      $('#rDate').value = fmtDate();
+      go('rez');
+    }
+
+    async function setRezStatus(id, status) {
+      const r = recs.find((x) => x.id === id);
+      if (!r) return;
+      r.status = status;
+      logAction(`Status dəyişdi (${r.cust}): ${status}`);
+      await Promise.all([upsertRecordCloud(r), syncStateCloud()]);
+      all();
+    }
+
+    function showUndo(label) {
+      const bar = $('#undoBar');
+      $('#undoText').textContent = label;
+      bar.classList.remove('hidden');
+      clearTimeout(undoTimer);
+      undoTimer = setTimeout(() => {
+        bar.classList.add('hidden');
+        lastDeleted = null;
+      }, 6000);
+    }
+
+    async function undoDelete() {
+      if (!lastDeleted) return;
+      if (lastDeleted.kind === 'rec') {
+        recs.unshift(lastDeleted.item);
+        await upsertRecordCloud(lastDeleted.item);
+      }
+      lastDeleted = null;
+      $('#undoBar').classList.add('hidden');
+      all();
+    }
+
+    async function delRez(id) {
+      const idx = recs.findIndex((x) => x.id === id);
+      if (idx < 0) return;
+      const [removed] = recs.splice(idx, 1);
+      lastDeleted = { kind: 'rec', item: removed };
+      logAction(`Rezervasiya silindi: ${removed.cust}`);
+      await Promise.all([deleteRecordCloud(id), syncStateCloud()]);
+      showUndo(`"${removed.cust}" silindi`);
+      all();
+    }
+
+    async function addSrv(e) {
+      e.preventDefault();
+      const name = $('#sName').value.trim();
+      const cat = $('#sCat').value || 'Ümumi';
+      const price = Number($('#sPrice').value || 0);
+      if (!name) return;
+      state.services.push({ name, cat, price });
+      logAction(`Xidmət əlavə edildi: ${name}`);
+      await syncStateCloud();
+      $('#fS').reset();
+      fillSelects();
+      all();
+    }
+
+    async function delSrv(idx) {
+      const [s] = state.services.splice(idx, 1);
+      if (s) logAction(`Xidmət silindi: ${s.name}`);
+      await syncStateCloud();
+      fillSelects();
+      all();
+    }
+
+    async function addCat(e) {
+      e.preventDefault();
+      const name = $('#cName').value.trim();
+      if (!name) return;
+      if (!state.cats.includes(name)) state.cats.push(name);
+      logAction(`Kateqoriya əlavə edildi: ${name}`);
+      await syncStateCloud();
+      $('#cName').value = '';
+      fillSelects();
+      all();
+    }
+
+    async function addRem(e) {
+      e.preventDefault();
+      const text = $('#rmText').value.trim();
+      const date = $('#rmDate').value.trim() || fmtDate();
+      if (!text) return;
+      state.rems.unshift({ id: Date.now(), text, date, done: false });
+      logAction(`Reminder əlavə edildi: ${text}`);
+      await syncStateCloud();
+      $('#rmText').value = '';
+      all();
+    }
+
+    async function toggleRem(id) {
+      const r = state.rems.find((x) => x.id === id);
+      if (!r) return;
+      r.done = !r.done;
+      await syncStateCloud();
+      all();
+    }
+
+    async function delRem(id) {
+      state.rems = state.rems.filter((x) => x.id !== id);
+      await syncStateCloud();
+      all();
+    }
+
+    async function addPerson(e, key, nameId, roleId, feeId) {
+      e.preventDefault();
+      const name = $(`#${nameId}`).value.trim();
+      const role = $(`#${roleId}`).value.trim();
+      const fee = Number($(`#${feeId}`).value || 0);
+      if (!name) return;
+      state[key].push({ name, role, fee });
+      logAction(`Əlavə edildi (${key}): ${name}`);
+      await syncStateCloud();
+      e.target.reset();
+      fillSelects();
+      all();
+    }
+
+    async function delPerson(key, idx) {
+      state[key].splice(idx, 1);
+      await syncStateCloud();
+      fillSelects();
+      all();
+    }
+
+    async function saveSettings(e) {
+      e.preventDefault();
+      state.settings.salonName = $('#setSalonName').value.trim() || 'Salon';
+      state.settings.currency = $('#setCurrency').value.trim() || 'AZN';
+      logAction('Salon ayarları yeniləndi');
+      await syncStateCloud();
+      const msg = $('#setMsg');
+      msg.textContent = 'Ayarlar yadda saxlanıldı.';
+      msg.className = 'msg ok';
+      msg.classList.remove('hidden');
+      all();
+    }
+
+    function statusPill(st) {
+      if (st === 'Tamamlandı' || st === 'Təsdiqləndi') return `<span class="pill ok">${esc(st)}</span>`;
+      if (st === 'Ləğv edildi') return `<span class="pill err">${esc(st)}</span>`;
+      return `<span class="pill warn">${esc(st || 'Gözləyir')}</span>`;
+    }
+
+    function filteredRecs() {
+      const q = ($('#qSearch')?.value || '').trim().toLowerCase();
+      if (!q) return recs;
+      return recs.filter((r) =>
+        (r.cust || '').toLowerCase().includes(q) ||
+        (r.phone || '').toLowerCase().includes(q) ||
+        (r.srv || '').toLowerCase().includes(q) ||
+        (r.date || '').toLowerCase().includes(q)
+      );
+    }
+
+    function rDash() {
+      const today = fmtDate();
+      const curMonth = today.slice(3);
+      const todayCnt = recs.filter((r) => r.date === today && r.status !== 'Ləğv edildi').length;
+      const openCnt = recs.filter((r) => r.status === 'Gözləyir' || r.status === 'Təsdiqləndi').length;
+      const monthRev = recs
+        .filter((r) => (r.date || '').endsWith(curMonth) && r.status !== 'Ləğv edildi')
+        .reduce((a, b) => a + Number(b.price || 0), 0);
+      const activeRem = (state.rems || []).filter((x) => !x.done).length;
+
+      $('#kpiToday').textContent = todayCnt;
+      $('#kpiOpen').textContent = openCnt;
+      $('#kpiRev').textContent = monthRev.toFixed(2);
+      $('#kpiRem').textContent = activeRem;
+
+      const body = $('#dashRows');
+      if (!body) return;
+      const rows = filteredRecs().slice(0, 8);
+      body.innerHTML = rows.length
+        ? rows.map((r) => `
+          <tr>
+            <td><strong>${esc(r.cust)}</strong></td>
+            <td>${esc(r.srv)}</td>
+            <td>${esc(r.date)} ${esc(r.time || '')}</td>
+            <td>${Number(r.price || 0).toFixed(2)} AZN</td>
+            <td>${statusPill(r.status)}</td>
+          </tr>`).join('')
+        : '<tr><td colspan="5" class="muted">Rezervasiya yoxdur</td></tr>';
+    }
+
+    function rRez() {
+      const stFilter = $('#fStatus')?.value || '';
+      const list = filteredRecs().filter((r) => !stFilter || r.status === stFilter);
+      const body = $('#rezRows');
+      if (!body) return;
+      body.innerHTML = list.length
+        ? list.map((r) => `
+          <tr>
+            <td><strong>${esc(r.cust)}</strong></td>
+            <td>${esc(r.phone || '-')}</td>
+            <td>${esc(r.srv)}</td>
+            <td>${esc(r.date)}</td>
+            <td>${esc(r.time || '-')}</td>
+            <td>${Number(r.price || 0).toFixed(2)} AZN</td>
+            <td>${statusPill(r.status)}</td>
+            <td>
+              <div class="row-actions">
+                <button type="button" class="btn btn-ghost btn-sm" onclick="setRezStatus('${r.id}','Tamamlandı')">Tamamla</button>
+                <button type="button" class="btn btn-danger btn-sm" onclick="delRez('${r.id}')">Sil</button>
+              </div>
+            </td>
+          </tr>`).join('')
+        : '<tr><td colspan="8" class="muted">Qeyd tapılmadı</td></tr>';
+    }
+
+    function rSrv() {
+      const body = $('#srvRows');
+      if (!body) return;
+      body.innerHTML = (state.services || []).length
+        ? state.services.map((s, i) => `
+          <tr>
+            <td><strong>${esc(s.name)}</strong></td>
+            <td>${esc(s.cat || 'Ümumi')}</td>
+            <td>${Number(s.price || 0).toFixed(2)} AZN</td>
+            <td><button type="button" class="btn btn-danger btn-sm" onclick="delSrv(${i})">Sil</button></td>
+          </tr>`).join('')
+        : '<tr><td colspan="4" class="muted">Xidmət əlavə edilməyib</td></tr>';
+    }
+
+    function rCat() {
+      const el = $('#catList');
+      if (!el) return;
+      el.innerHTML = (state.cats || []).map((c) => `<span class="badge">${esc(c)}</span>`).join('');
+    }
+
+    function rCust() {
+      const map = new Map();
+      recs.forEach((r) => {
+        const key = (r.cust || '').trim();
+        if (!key) return;
+        const cur = map.get(key) || { name: key, phone: r.phone || '-', cnt: 0, sum: 0 };
+        cur.cnt += 1;
+        if (r.status !== 'Ləğv edildi') cur.sum += Number(r.price || 0);
+        if (r.phone) cur.phone = r.phone;
+        map.set(key, cur);
+      });
+      const body = $('#custRows');
+      if (!body) return;
+      const rows = Array.from(map.values());
+      body.innerHTML = rows.length
+        ? rows.map((c) => `
+          <tr>
+            <td><strong>${esc(c.name)}</strong></td>
+            <td>${esc(c.phone)}</td>
+            <td>${c.cnt}</td>
+            <td>${c.sum.toFixed(2)} AZN</td>
+          </tr>`).join('')
+        : '<tr><td colspan="4" class="muted">Müştəri yoxdur</td></tr>';
+    }
+
+    function rRem() {
+      const body = $('#remRows');
+      if (!body) return;
+      body.innerHTML = (state.rems || []).length
+        ? state.rems.map((rm) => `
+          <tr>
+            <td>${esc(rm.text)}</td>
+            <td>${esc(rm.date)}</td>
+            <td>${rm.done ? '<span class="pill ok">Bağlı</span>' : '<span class="pill warn">Aktiv</span>'}</td>
+            <td>
+              <div class="row-actions">
+                <button type="button" class="btn btn-ghost btn-sm" onclick="toggleRem(${rm.id})">${rm.done ? 'Aç' : 'Bitir'}</button>
+                <button type="button" class="btn btn-danger btn-sm" onclick="delRem(${rm.id})">Sil</button>
+              </div>
+            </td>
+          </tr>`).join('')
+        : '<tr><td colspan="4" class="muted">Reminder yoxdur</td></tr>';
+    }
+
+    function rRep() {
+      const m = ($('#repMonth')?.value || '').trim() || fmtDate().slice(3);
+      const list = recs.filter((r) => (r.date || '').endsWith(m));
+      const valid = list.filter((r) => r.status !== 'Ləğv edildi');
+      const done = list.filter((r) => r.status === 'Tamamlandı');
+      $('#repCnt').textContent = valid.length;
+      $('#repSum').textContent = valid.reduce((a, b) => a + Number(b.price || 0), 0).toFixed(2);
+      $('#repDone').textContent = done.reduce((a, b) => a + Number(b.price || 0), 0).toFixed(2);
+
+      const body = $('#repRows');
+      if (!body) return;
+      body.innerHTML = list.length
+        ? list.map((r) => `
+          <tr>
+            <td>${esc(r.date)}</td>
+            <td>${esc(r.cust)}</td>
+            <td>${esc(r.srv)}</td>
+            <td>${Number(r.price || 0).toFixed(2)} AZN</td>
+            <td>${statusPill(r.status)}</td>
+          </tr>`).join('')
+        : '<tr><td colspan="5" class="muted">Bu ay üçün qeyd yoxdur</td></tr>';
+    }
+
+    function rPeople(key, bodyId) {
+      const body = $(`#${bodyId}`);
+      if (!body) return;
+      const arr = state[key] || [];
+      body.innerHTML = arr.length
+        ? arr.map((p, i) => `
+          <tr>
+            <td><strong>${esc(p.name)}</strong></td>
+            <td>${esc(p.role || '-')}</td>
+            <td>${Number(p.fee || 0).toFixed(2)}</td>
+            <td><button type="button" class="btn btn-danger btn-sm" onclick="delPerson('${key}', ${i})">Sil</button></td>
+          </tr>`).join('')
+        : '<tr><td colspan="4" class="muted">Qeyd yoxdur</td></tr>';
+    }
+
+    function rJur() {
+      const el = $('#jurList');
+      if (!el) return;
+      const list = state.journal || [];
+      el.innerHTML = list.length
+        ? list.map((j) => `
+          <div style="padding:8px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;gap:10px;">
+            <span>${esc(j.text)}</span>
+            <span class="muted">${esc(j.date)} ${esc(j.time || '')}</span>
+          </div>`).join('')
+        : '<div class="muted">Jurnal boşdur</div>';
+    }
+
+    function all() {
+      const openRez = recs.filter((r) => r.status !== 'Ləğv edildi').length;
+      const activeRem = (state.rems || []).filter((x) => !x.done).length;
+      if ($('#bdgRez')) $('#bdgRez').textContent = openRez;
+      if ($('#bdgRem')) $('#bdgRem').textContent = activeRem;
+      if ($('#todayLabel')) $('#todayLabel').textContent = `Bu gün: ${fmtDate()}`;
+      rDash();
+      rRez();
+      rSrv();
+      rCat();
+      rCust();
+      rRem();
+      rRep();
+      rPeople('tenants', 'tenRows');
+      rPeople('staff', 'staffRows');
+      rJur();
+    }
+
+    async function adminCreateAccount(e) {
+      e.preventDefault();
+      const email = $('#admNewEmail').value.trim().toLowerCase();
+      const password = $('#admNewPass').value;
+      const msg = $('#admMsg');
+      const { error } = await sb.rpc('admin_create_user', { p_email: email, p_password: password });
+      if (error) {
+        msg.textContent = error.message || 'Hesab yaradıla bilmədi';
+        msg.className = 'msg err';
+      } else {
+        msg.textContent = `Hesab yaradıldı: ${email}`;
+        msg.className = 'msg ok';
+        $('#admNewEmail').value = '';
+        $('#admNewPass').value = '';
+      }
+      msg.classList.remove('hidden');
+    }
+
+    function copySql() {
+      navigator.clipboard?.writeText(SETUP_SQL);
+    }
+
+    async function applySession(session) {
+      currentUser = session?.user || null;
+      if (!currentUser) {
+        $('#appShell').classList.add('hidden');
+        $('#loginOverlay').classList.remove('hidden');
+        return;
+      }
+      $('#loginOverlay').classList.add('hidden');
+      $('#appShell').classList.remove('hidden');
+      $('#userEmailLabel').textContent = currentUser.email || '';
+      $('#adminNavGroup').classList.toggle('hidden', !isAdminUser(currentUser));
+      $('#sqlBox').textContent = SETUP_SQL;
+      await loadUserCloudData();
+    }
+
+    (async () => {
+      $('#todayLabel').textContent = `Bu gün: ${fmtDate()}`;
+      const { data: { session } } = await sb.auth.getSession();
+      await applySession(session);
+      sb.auth.onAuthStateChange((_event, sess) => {
+        applySession(sess);
+      });
+    })();
+  </script>
+</body>
+</html>
