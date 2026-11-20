@@ -425,6 +425,17 @@
       z-index: 900;
     }
 
+    pre.sql-box {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px;
+      font-size: 11.5px;
+      overflow-x: auto;
+      max-height: 260px;
+      white-space: pre;
+    }
+
     @media (max-width: 900px) {
       .app { grid-template-columns: 1fr; }
       .sidebar { position: static; height: auto; }
@@ -452,7 +463,7 @@
       <form id="loginForm" onsubmit="handleLogin(event)">
         <div class="field">
           <label for="authEmail">E-poçt</label>
-          <input id="authEmail" type="email" required placeholder="abbasli.celil@gmail.com" autocomplete="email" />
+          <input id="authEmail" type="email" required placeholder="ad@nümunə.az" autocomplete="email" />
         </div>
         <div class="field">
           <label for="authPass">Parol</label>
@@ -464,7 +475,7 @@
       <form id="resetForm" class="hidden" onsubmit="handleReset(event)">
         <div class="field">
           <label for="resetEmail">Qeydiyyatlı e-poçt</label>
-          <input id="resetEmail" type="email" required placeholder="abbasli.celil@gmail.com" />
+          <input id="resetEmail" type="email" required placeholder="ad@nümunə.az" />
         </div>
         <button type="submit" class="btn btn-primary w-full">Bərpa linki göndər</button>
       </form>
@@ -535,6 +546,13 @@
           </button>
           <button type="button" class="nav-item" data-p="jur" onclick="go('jur')">
             <span>Jurnal</span>
+          </button>
+        </div>
+
+        <div id="adminNavGroup" class="nav-group hidden">
+          <div class="nav-label">İdarəetmə</div>
+          <button type="button" class="nav-item" data-p="adm" onclick="go('adm')">
+            <span>Admin Panel</span>
           </button>
         </div>
       </div>
@@ -879,6 +897,38 @@
           <div id="jurList"></div>
         </div>
       </section>
+
+      <!-- ADMIN PANEL -->
+      <section id="p_adm" class="page hidden">
+        <div class="card">
+          <div class="card-title" style="margin-bottom:12px;">Yeni istifadəçi hesabı yarat</div>
+          <form onsubmit="adminCreateAccount(event)" class="grid-3">
+            <div class="field">
+              <label>İstifadəçi e-poçtu (login) *</label>
+              <input id="admNewEmail" type="email" required placeholder="user@salon.az" />
+            </div>
+            <div class="field">
+              <label>Parol *</label>
+              <input id="admNewPass" type="text" required minlength="6" placeholder="Minimum 6 simvol" />
+            </div>
+            <div class="field" style="display:flex;align-items:flex-end;">
+              <button type="submit" class="btn btn-primary w-full">Hesab yarat</button>
+            </div>
+          </form>
+          <div id="admMsg" class="msg hidden"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">Supabase SQL (Baza və RLS təhlükəsizliyi)</div>
+            <button type="button" class="btn btn-ghost btn-sm" onclick="copySql()">SQL kopyala</button>
+          </div>
+          <div class="muted" style="margin-bottom:10px;">
+            Hər istifadəçinin yalnız öz məlumatlarını görməsi üçün bu skripti Supabase SQL Editor-da icra edin.
+          </div>
+          <pre id="sqlBox" class="sql-box"></pre>
+        </div>
+      </section>
     </main>
   </div>
 
@@ -889,7 +939,80 @@
 
   <script>
     const SB_URL = 'https://ykcfsqbuustvderioxph.supabase.co';
-    const SB_KEY = 'sb_publishable_6tdzSskT4VmGLQBu8QU95A_3T8V1Dn_';
+    const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlrY2ZzcWJ1dXN0dmRlcmlveHBoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2MDc4NzEsImV4cCI6MjA4NzE4Mzg3MX0.0u3c2P8sV3Y8o7X4k2L9m1N6p5Q8r7T2v4W9x1Z3y5A';
+    const ADMIN_EMAILS = ['abbasli.celil@gmail.com'];
+
+    const SETUP_SQL = `create extension if not exists pgcrypto;
+
+create table if not exists public.salon_state (
+  id text primary key,
+  user_id uuid not null default auth.uid(),
+  data jsonb not null default '{}'::jsonb,
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists public.records (
+  id text primary key,
+  user_id uuid not null default auth.uid(),
+  data jsonb not null default '{}'::jsonb,
+  updated_at timestamptz not null default now()
+);
+
+alter table public.salon_state add column if not exists user_id uuid default auth.uid();
+alter table public.salon_state add column if not exists data jsonb not null default '{}'::jsonb;
+alter table public.salon_state add column if not exists updated_at timestamptz not null default now();
+
+alter table public.records add column if not exists user_id uuid default auth.uid();
+alter table public.records add column if not exists data jsonb not null default '{}'::jsonb;
+alter table public.records add column if not exists updated_at timestamptz not null default now();
+
+alter table public.salon_state enable row level security;
+alter table public.records enable row level security;
+
+drop policy if exists "salon_state_own" on public.salon_state;
+create policy "salon_state_own" on public.salon_state
+  for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+
+drop policy if exists "records_own" on public.records;
+create policy "records_own" on public.records
+  for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+
+create or replace function public.admin_create_user(p_email text, p_password text)
+returns uuid
+language plpgsql
+security definer
+set search_path = public, auth
+as $$
+declare
+  new_id uuid := gen_random_uuid();
+  v_email text := lower(trim(p_email));
+begin
+  if auth.uid() is null then
+    raise exception 'Giriş tələb olunur';
+  end if;
+  if exists (select 1 from auth.users where lower(email) = v_email) then
+    raise exception 'Bu e-poçt ilə artıq hesab var';
+  end if;
+  insert into auth.users (
+    id, instance_id, aud, role, email, encrypted_password,
+    email_confirmed_at, raw_app_meta_data, raw_user_meta_data, created_at, updated_at
+  ) values (
+    new_id, '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated',
+    v_email, crypt(p_password, gen_salt('bf')),
+    now(), '{"provider":"email","providers":["email"]}'::jsonb, '{}'::jsonb, now(), now()
+  );
+  insert into auth.identities (
+    id, user_id, provider_id, identity_data, provider, last_sign_in_at, created_at, updated_at
+  ) values (
+    gen_random_uuid(), new_id, v_email,
+    jsonb_build_object('sub', new_id, 'email', v_email, 'email_verified', true),
+    'email', now(), now(), now()
+  );
+  return new_id;
+end;
+$$;
+
+grant execute on function public.admin_create_user(text, text) to authenticated;`;
 
     const sb = window.supabase.createClient(SB_URL, SB_KEY, {
       auth: { persistSession: true, autoRefreshToken: true }
@@ -973,6 +1096,11 @@
       }
     }
 
+    function isAdminUser(user) {
+      const email = (user?.email || '').trim().toLowerCase();
+      return ADMIN_EMAILS.map((e) => e.toLowerCase()).includes(email) || user?.user_metadata?.role === 'admin';
+    }
+
     function switchAuthTab(tab) {
       $('#tabLogin').classList.toggle('active', tab === 'login');
       $('#tabReset').classList.toggle('active', tab === 'reset');
@@ -1028,7 +1156,7 @@
       dash: 'Dashboard', rez: 'Rezervasiyalar', new: 'Yeni rezervasiya',
       srv: 'Xidmətlər', cat: 'Kateqoriyalar', cust: 'Müştərilər',
       rem: 'Reminder', auto: 'Ayarlar', rep: 'Aylıq hesabat',
-      ten: 'İcarədarlar', staff: 'Əməkdaşlar', jur: 'Jurnal'
+      ten: 'İcarədarlar', staff: 'Əməkdaşlar', jur: 'Jurnal', adm: 'Admin Panel'
     };
 
     function go(p) {
@@ -1346,7 +1474,7 @@
 
     function rDash() {
       const today = fmtDate();
-      const curMonth = today.slice(3);
+      const curMonth = today.slice(3); // MM.İİ
       const todayCnt = recs.filter((r) => r.date === today && r.status !== 'Ləğv edildi').length;
       const openCnt = recs.filter((r) => r.status === 'Gözləyir' || r.status === 'Təsdiqləndi').length;
       const monthRev = recs
@@ -1532,6 +1660,28 @@
       rJur();
     }
 
+    async function adminCreateAccount(e) {
+      e.preventDefault();
+      const email = $('#admNewEmail').value.trim().toLowerCase();
+      const password = $('#admNewPass').value;
+      const msg = $('#admMsg');
+      const { error } = await sb.rpc('admin_create_user', { p_email: email, p_password: password });
+      if (error) {
+        msg.textContent = error.message || 'Hesab yaradıla bilmədi';
+        msg.className = 'msg err';
+      } else {
+        msg.textContent = `Hesab yaradıldı: ${email}`;
+        msg.className = 'msg ok';
+        $('#admNewEmail').value = '';
+        $('#admNewPass').value = '';
+      }
+      msg.classList.remove('hidden');
+    }
+
+    function copySql() {
+      navigator.clipboard?.writeText(SETUP_SQL);
+    }
+
     async function applySession(session) {
       currentUser = session?.user || null;
       if (!currentUser) {
@@ -1542,6 +1692,8 @@
       $('#loginOverlay').classList.add('hidden');
       $('#appShell').classList.remove('hidden');
       $('#userEmailLabel').textContent = currentUser.email || '';
+      $('#adminNavGroup').classList.toggle('hidden', !isAdminUser(currentUser));
+      $('#sqlBox').textContent = SETUP_SQL;
       await loadUserCloudData();
     }
 
