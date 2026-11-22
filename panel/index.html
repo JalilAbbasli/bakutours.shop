@@ -1,0 +1,2347 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Salon Panel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root {
+      --bg: #f6f4f8;
+      --surface: #ffffff;
+      --surface-2: #fbf9fd;
+      --text: #1b1722;
+      --muted: #6c6578;
+      --border: #e6e0ee;
+      --accent: #7c3aed;
+      --accent-2: #6d28d9;
+      --accent-soft: #f3ecff;
+      --ok: #15803d;
+      --ok-bg: #dcfce7;
+      --warn: #b45309;
+      --warn-bg: #fef3c7;
+      --err: #b91c1c;
+      --err-bg: #fee2e2;
+      --radius: 14px;
+      --shadow: 0 1px 2px rgba(27, 23, 34, 0.04), 0 6px 20px rgba(27, 23, 34, 0.05);
+    }
+
+    body.dark {
+      --bg: #14111a;
+      --surface: #1d1925;
+      --surface-2: #241f2e;
+      --text: #f3effa;
+      --muted: #a59db3;
+      --border: #332c40;
+      --accent: #8b5cf6;
+      --accent-2: #7c3aed;
+      --accent-soft: #2a2140;
+      --ok: #4ade80;
+      --ok-bg: #14301f;
+      --warn: #fbbf24;
+      --warn-bg: #3a2a0c;
+      --err: #f87171;
+      --err-bg: #3a1515;
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.25);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body, input, select, textarea, button, table, th, td, pre, code {
+      font-family: 'Montserrat', sans-serif;
+    }
+    body {
+      background-color: var(--bg);
+      background-image:
+        radial-gradient(circle at 12% 8%, rgba(124, 58, 237, 0.08), transparent 36%),
+        radial-gradient(circle at 88% 16%, rgba(180, 83, 9, 0.06), transparent 38%),
+        linear-gradient(to right, rgba(108, 101, 120, 0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(108, 101, 120, 0.05) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 32px 32px, 32px 32px;
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
+      font-size: 13.5px;
+    }
+
+    body.dark {
+      background-image:
+        radial-gradient(circle at 14% 10%, rgba(139, 92, 246, 0.14), transparent 38%),
+        radial-gradient(circle at 86% 14%, rgba(251, 191, 36, 0.06), transparent 36%),
+        linear-gradient(to right, rgba(243, 239, 250, 0.035) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(243, 239, 250, 0.035) 1px, transparent 1px);
+    }
+
+    .hidden { display: none !important; }
+
+    #loginOverlay {
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(124, 58, 237, 0.12), transparent 40%),
+        radial-gradient(circle at 80% 78%, rgba(180, 83, 9, 0.08), transparent 42%),
+        var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 999;
+    }
+
+    .auth-card {
+      width: 100%;
+      max-width: 410px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      box-shadow: var(--shadow);
+    }
+    .auth-brand { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; }
+    .brand-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: var(--accent); color: #fff;
+      display: grid; place-items: center; font-weight: 700;
+    }
+    .auth-title { font-size: 18px; font-weight: 700; }
+    .auth-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+    .tabs-row {
+      display: flex; gap: 6px;
+      background: var(--surface-2); border: 1px solid var(--border);
+      padding: 4px; border-radius: 10px; margin-bottom: 16px;
+    }
+    .tab-btn {
+      flex: 1; border: 0; background: transparent; color: var(--muted);
+      font-family: inherit; font-size: 12px; font-weight: 600;
+      padding: 7px; border-radius: 8px; cursor: pointer;
+    }
+    .tab-btn.active { background: var(--accent); color: #fff; }
+
+    .field { margin-bottom: 12px; }
+    .field label {
+      display: block; font-size: 11.5px; font-weight: 600;
+      color: var(--muted); margin-bottom: 5px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      font-family: inherit;
+      font-size: 13px;
+      color: var(--text);
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 9px 11px;
+      outline: none;
+    }
+    input:focus, select:focus, textarea:focus { border-color: var(--accent); }
+    textarea { min-height: 76px; resize: vertical; }
+    body.dark input[type="month"], body.dark input[type="time"] { color-scheme: dark; }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      font-family: inherit; font-size: 12.5px; font-weight: 600;
+      border-radius: 10px; padding: 9px 14px;
+      border: 1px solid transparent; cursor: pointer; transition: 0.15s ease;
+      white-space: nowrap;
+    }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { background: var(--accent-2); }
+    .btn-ghost { background: var(--surface-2); color: var(--text); border-color: var(--border); }
+    .btn-ghost:hover { border-color: var(--accent); }
+    .btn-danger { background: var(--err-bg); color: var(--err); border-color: transparent; }
+    .btn-sm { padding: 6px 10px; font-size: 11.5px; border-radius: 8px; }
+    .w-full { width: 100%; }
+
+    .msg { margin-top: 10px; font-size: 12px; padding: 8px 10px; border-radius: 8px; word-break: break-word; }
+    .msg.err { background: var(--err-bg); color: var(--err); }
+    .msg.ok { background: var(--ok-bg); color: var(--ok); }
+    .msg.warn { background: var(--warn-bg); color: var(--warn); }
+
+    .app { display: grid; grid-template-columns: 245px 1fr; min-height: 100vh; }
+
+    .sidebar {
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: 16px 12px;
+      display: flex; flex-direction: column; justify-content: space-between;
+      position: sticky; top: 0; height: 100vh; overflow-y: auto;
+    }
+    .side-top {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 4px 6px 14px; border-bottom: 1px solid var(--border); margin-bottom: 12px;
+    }
+    .nav-group { margin-bottom: 14px; }
+    .nav-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.06em;
+      color: var(--muted); padding: 4px 10px; text-transform: uppercase;
+    }
+    .nav-item {
+      width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 8px;
+      background: transparent; border: 0; color: var(--text);
+      font-family: inherit; font-size: 12.5px; font-weight: 500;
+      padding: 8px 10px; border-radius: 10px; cursor: pointer; text-align: left; margin-bottom: 2px;
+    }
+    .nav-left { display: inline-flex; align-items: center; gap: 9px; min-width: 0; }
+    .nav-ico { width: 16px; height: 16px; flex-shrink: 0; color: var(--muted); transition: color 0.15s ease; }
+    .nav-item:hover .nav-ico { color: var(--text); }
+    .nav-item.active .nav-ico { color: var(--accent); }
+    .nav-item:hover { background: var(--surface-2); }
+    .nav-item.active { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+
+    .badge {
+      background: var(--accent-soft); color: var(--accent);
+      font-size: 10.5px; font-weight: 700; padding: 2px 7px; border-radius: 999px;
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .badge button {
+      border: 0; background: transparent; color: inherit; cursor: pointer;
+      font-weight: 700; font-size: 12px; line-height: 1; padding: 0 0 0 2px;
+    }
+
+    .side-foot { border-top: 1px solid var(--border); padding-top: 12px; display: flex; flex-direction: column; gap: 8px; }
+    .theme-row {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px;
+      background: var(--surface-2); padding: 3px; border-radius: 9px; border: 1px solid var(--border);
+    }
+    .theme-btn {
+      border: 0; background: transparent; color: var(--muted);
+      font-family: inherit; font-size: 11px; font-weight: 600;
+      padding: 5px; border-radius: 7px; cursor: pointer;
+    }
+    .theme-btn.active { background: var(--accent); color: #fff; }
+    .user-box { font-size: 11.5px; color: var(--muted); word-break: break-all; }
+
+    .cloud-status { font-size: 11px; font-weight: 600; padding: 6px 8px; border-radius: 8px; }
+    .cloud-status.ok { background: var(--ok-bg); color: var(--ok); }
+    .cloud-status.warn { background: var(--warn-bg); color: var(--warn); }
+    .cloud-status.err { background: var(--err-bg); color: var(--err); }
+
+    .main { padding: 20px 24px 40px; max-width: 1280px; width: 100%; }
+    .topbar {
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+      gap: 12px; margin-bottom: 20px;
+    }
+    .page-title { font-size: 20px; font-weight: 700; }
+    .top-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .today-pill {
+      font-size: 12px; font-weight: 600; color: var(--muted);
+      background: var(--surface); border: 1px solid var(--border);
+      padding: 7px 12px; border-radius: 10px;
+    }
+
+    .card {
+      background: color-mix(in srgb, var(--surface) 92%, transparent);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: var(--shadow);
+      margin-bottom: 16px;
+      position: relative;
+    }
+    .card-head {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 10px; margin-bottom: 12px; flex-wrap: wrap;
+    }
+    .card-title { font-size: 15px; font-weight: 700; }
+    .muted { color: var(--muted); font-size: 12px; }
+
+    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    .grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
+
+    .kpi-val { font-size: 22px; font-weight: 700; margin-top: 4px; font-variant-numeric: tabular-nums; }
+    .kpi-val.pos { color: var(--ok); }
+    .kpi-val.neg { color: var(--err); }
+    .card.highlight { border-color: var(--accent); }
+
+    .table-wrap { width: 100%; overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td {
+      text-align: left; padding: 10px 8px;
+      border-bottom: 1px solid var(--border);
+      font-size: 12.5px; vertical-align: middle;
+    }
+    th { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; }
+    td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    tfoot td { font-weight: 700; border-bottom: 0; }
+
+    .pill { display: inline-block; padding: 3px 8px; border-radius: 999px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+    .pill.ok { background: var(--ok-bg); color: var(--ok); }
+    .pill.warn { background: var(--warn-bg); color: var(--warn); }
+    .pill.err { background: var(--err-bg); color: var(--err); }
+
+    .status-select { padding: 4px 8px; font-size: 11.5px; border-radius: 8px; width: auto; min-width: 118px; }
+    .mini-input { padding: 5px 8px; font-size: 12px; border-radius: 8px; width: 90px; }
+    .mini-select { padding: 5px 8px; font-size: 12px; border-radius: 8px; width: auto; }
+
+    .chart-bars {
+      display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px;
+      align-items: end; height: 155px; padding-top: 14px;
+    }
+    .bar-col { display: flex; flex-direction: column; align-items: center; gap: 6px; height: 100%; justify-content: flex-end; }
+    .bar-track {
+      width: 100%; max-width: 42px; height: 105px;
+      background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px;
+      display: flex; align-items: flex-end; overflow: hidden; padding: 3px;
+    }
+    .bar-fill {
+      width: 100%; background: linear-gradient(180deg, var(--accent), var(--accent-2));
+      border-radius: 7px; min-height: 4px; transition: height 0.25s ease;
+    }
+    .bar-val { font-size: 10.5px; font-weight: 700; color: var(--text); }
+    .bar-lbl { font-size: 10.5px; color: var(--muted); font-weight: 600; }
+
+    .cat-progress-item { margin-bottom: 11px; }
+    .cat-progress-head { display: flex; justify-content: space-between; gap: 10px; font-size: 12px; font-weight: 600; margin-bottom: 5px; }
+    .cat-progress-track {
+      height: 8px; background: var(--surface-2); border: 1px solid var(--border);
+      border-radius: 999px; overflow: hidden;
+    }
+    .cat-progress-fill { height: 100%; background: var(--accent); border-radius: 999px; transition: width 0.25s ease; }
+    .cat-progress-fill.exp { background: var(--warn); }
+
+    .row-actions { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+    .info-note {
+      font-size: 12px; color: var(--muted);
+      background: var(--surface-2); border: 1px dashed var(--border);
+      border-radius: 10px; padding: 10px 12px; margin-top: 10px;
+    }
+
+    .undo-bar {
+      position: fixed; right: 20px; bottom: 20px;
+      background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow);
+      border-radius: 12px; padding: 10px 14px;
+      display: flex; align-items: center; gap: 12px; z-index: 900;
+    }
+
+    @media (max-width: 1100px) {
+      .grid-5 { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 900px) {
+      .app { grid-template-columns: 1fr; }
+      .sidebar { position: static; height: auto; }
+      .grid-5, .grid-4, .grid-3, .grid-2 { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <!-- GİRİŞ -->
+  <div id="loginOverlay">
+    <div class="auth-card">
+      <div class="auth-brand">
+        <div class="brand-icon">S</div>
+        <div>
+          <div class="auth-title">Salon Panel</div>
+          <div class="auth-sub">Şəxsi hesab girişi</div>
+        </div>
+      </div>
+
+      <form id="loginForm" action="javascript:void(0)" onsubmit="handleLogin(event)">
+        <div class="field">
+          <label for="authUser">İstifadəçi adı</label>
+          <input id="authUser" type="text" required placeholder="istifadeci_adi" autocomplete="username" autocapitalize="none" spellcheck="false" />
+        </div>
+        <div class="field">
+          <label for="authPass">Parol</label>
+          <input id="authPass" type="password" required placeholder="••••••••" autocomplete="current-password" />
+        </div>
+        <button id="loginBtn" type="submit" class="btn btn-primary w-full">Daxil ol</button>
+      </form>
+      <div style="margin-top:12px;">
+        <button type="button" class="btn btn-ghost btn-sm w-full" onclick="enterLocalPreviewSession()">
+          Yerli rejimdə daxil ol (məlumat yalnız bu brauzerdə qalır)
+        </button>
+      </div>
+      <div class="muted" style="margin-top:12px;text-align:center;">Hesabı yalnız salon rəhbəri yarada bilər.</div>
+
+      <div id="authMsg" class="msg hidden"></div>
+    </div>
+  </div>
+
+  <!-- ƏSAS TƏTBİQ -->
+  <div id="appShell" class="app hidden">
+    <aside class="sidebar">
+      <div>
+        <div class="side-top">
+          <div style="display:flex;align-items:center;gap:9px;">
+            <div class="brand-icon">S</div>
+            <strong id="sideSalonTitle">Salon</strong>
+          </div>
+        </div>
+
+        <div class="nav-group">
+          <div class="nav-label">Ümumi baxış</div>
+          <button type="button" class="nav-item active" data-p="dash" onclick="go('dash')">
+            <span class="nav-left">
+              <svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="3" width="7" height="9" rx="1.5"></rect>
+                <rect x="14" y="3" width="7" height="5" rx="1.5"></rect>
+                <rect x="14" y="12" width="7" height="9" rx="1.5"></rect>
+                <rect x="3" y="16" width="7" height="5" rx="1.5"></rect>
+              </svg>
+              <span>Dashboard</span>
+            </span>
+          </button>
+        </div>
+
+        <div class="nav-group">
+          <div class="nav-label">Maliyyə</div>
+          <button type="button" class="nav-item" data-p="fin" onclick="go('fin')">
+            <span class="nav-left">
+              <svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M20 7H5a2 2 0 0 1 0-4h13v4"></path>
+                <path d="M3 5v14a2 2 0 0 0 2 2h15V7"></path>
+                <circle cx="16" cy="14" r="1.5"></circle>
+              </svg>
+              <span>Maliyyə icmalı</span>
+            </span>
+          </button>
+          <button type="button" class="nav-item" data-p="exp" onclick="go('exp')">
+            <span class="nav-left">
+              <svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M6 2h12v20l-3-2-3 2-3-2-3 2z"></path>
+                <line x1="9" y1="7" x2="15" y2="7"></line>
+                <line x1="9" y1="11" x2="15" y2="11"></line>
+                <line x1="9" y1="15" x2="13" y2="15"></line>
+              </svg>
+              <span>Xərclər</span>
+            </span>
+          </button>
+          <button type="button" class="nav-item" data-p="rep" onclick="go('rep')">
+            <span class="nav-left">
+              <svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="18" y1="20" x2="18" y2="10"></line>
+                <line x1="12" y1="20" x2="12" y2="4"></line>
+                <line x1="6" y1="20" x2="6" y2="14"></line>
+              </svg>
+              <span>Aylıq hesabat</span>
+            </span>
+          </button>
+        </div>
+
+        <div class="nav-group">
+          <div class="nav-label">Əməliyyatlar</div>
+          <button type="button" class="nav-item" data-p="rez" onclick="go('rez')">
+            <span class="nav-left">
+              <svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="4" width="18" height="18" rx="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+              <span>Rezervasiyalar</span>
+            </span>
+            <span id="bdgRez" class="badge">0</span>
+          </button>
+          <button type="button" class="nav-item" data-p="new" onclick="go('new')">
+            <span class="nav-left">
+              <svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="4" width="18" height="18" rx="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+                <line x1="12" y1="13" x2="12" y2="19"></line>
+                <line x1="9" y1="16" x2="15" y2="16"></line>
+              </svg>
+              <span>Yeni rezervasiya</span>
+            </span>
+          </button>
+          <button type="button" class="nav-item" data-p="srv" onclick="go('srv')">
+            <span class="nav-left">
+              <svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="6" cy="6" r="3"></circle>
+                <circle cx="6" cy="18" r="3"></circle>
+                <line x1="20" y1="4" x2="8.12" y2="15.88"></line>
+                <line x1="14.47" y1="14.48" x2="20" y2="20"></line>
+                <line x1="8.12" y1="8.12" x2="12" y2="12"></line>
+              </svg>
+              <span>Xidmətlər</span>
+            </span>
+          </button>
+          <button type="button" class="nav-item" data-p="cat" onclick="go('cat')">
+            <span class="nav-left">
+              <svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+                <line x1="7" y1="7" x2="7.01" y2="7"></line>
+              </svg>
+              <span>Kateqoriyalar</span>
+            </span>
+          </button>
+        </div>
+
+        <div class="nav-group">
+          <div class="nav-label">İnsanlar</div>
+          <button type="button" class="nav-item" data-p="staff" onclick="go('staff')">
+            <span class="nav-left">
+              <svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+              <span>Əməkdaşlar</span>
+            </span>
+          </button>
+          <button type="button" class="nav-item" data-p="ten" onclick="go('ten')">
+            <span class="nav-left">
+              <svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M3 21h18"></path>
+                <path d="M5 21V7l8-4v18"></path>
+                <path d="M19 21V11l-6-4"></path>
+                <path d="M9 9v.01"></path>
+                <path d="M9 12v.01"></path>
+                <path d="M9 15v.01"></path>
+              </svg>
+              <span>İcarədarlar</span>
+            </span>
+          </button>
+          <button type="button" class="nav-item" data-p="cust" onclick="go('cust')">
+            <span class="nav-left">
+              <svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+              <span>Müştərilər</span>
+            </span>
+          </button>
+        </div>
+
+        <div class="nav-group">
+          <div class="nav-label">Digər</div>
+          <button type="button" class="nav-item" data-p="rem" onclick="go('rem')">
+            <span class="nav-left">
+              <svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+              </svg>
+              <span>Reminder</span>
+            </span>
+            <span id="bdgRem" class="badge">0</span>
+          </button>
+          <button type="button" class="nav-item" data-p="jur" onclick="go('jur')">
+            <span class="nav-left">
+              <svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                <line x1="8" y1="7" x2="16" y2="7"></line>
+                <line x1="8" y1="11" x2="14" y2="11"></line>
+              </svg>
+              <span>Jurnal</span>
+            </span>
+          </button>
+          <button type="button" class="nav-item" data-p="auto" onclick="go('auto')">
+            <span class="nav-left">
+              <svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+              <span>Ayarlar</span>
+            </span>
+          </button>
+        </div>
+      </div>
+
+      <div class="side-foot">
+        <div class="theme-row">
+          <button type="button" class="theme-btn" data-th="dark" onclick="setTheme('dark')">Tünd</button>
+          <button type="button" class="theme-btn active" data-th="light" onclick="setTheme('light')">Açıq</button>
+          <button type="button" class="theme-btn" data-th="auto" onclick="setTheme('auto')">Avto</button>
+        </div>
+        <div id="userEmailLabel" class="user-box"></div>
+        <div id="cloudBadge" class="cloud-status ok">Şəxsi bulud bazası aktivdir</div>
+        <button type="button" class="btn btn-ghost btn-sm w-full" onclick="handleLogout()">Çıxış</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <h1 id="pageTitle" class="page-title">Dashboard</h1>
+        <div class="top-actions">
+          <input id="qSearch" type="search" placeholder="Müştəri / rezervasiya axtar..." oninput="all()" style="width:230px;" />
+          <div id="todayLabel" class="today-pill">Bu gün</div>
+        </div>
+      </div>
+
+      <!-- DASHBOARD -->
+      <section id="p_dash" class="page">
+        <div class="card">
+          <div class="card-head" style="margin-bottom:0;">
+            <div>
+              <div id="greetTitle" class="card-title">Xoş gəlmisiniz</div>
+              <div class="muted">Gündəlik göstəricilərin ümumi icmalı</div>
+            </div>
+            <div class="row-actions">
+              <button type="button" class="btn btn-ghost btn-sm" onclick="go('exp')">+ Xərc</button>
+              <button type="button" class="btn btn-primary btn-sm" onclick="go('new')">+ Yeni rezervasiya</button>
+            </div>
+          </div>
+        </div>
+        <div class="grid-4">
+          <div class="card">
+            <div class="muted">Bugünkü rezervasiya</div>
+            <div id="kpiToday" class="kpi-val">0</div>
+            <div id="kpiTodaySub" class="muted" style="margin-top:4px;">Bu gün aktiv görüşlər</div>
+          </div>
+          <div class="card">
+            <div class="muted">Gözləyən / Təsdiqli</div>
+            <div id="kpiOpen" class="kpi-val">0</div>
+            <div id="kpiOpenSub" class="muted" style="margin-top:4px;">İcra gözləyən işlər</div>
+          </div>
+          <div class="card">
+            <div class="muted">Bu ay gəlir (tamamlanmış)</div>
+            <div id="kpiRev" class="kpi-val">0.00</div>
+            <div id="kpiAvgSub" class="muted" style="margin-top:4px;">Orta çek: 0.00</div>
+          </div>
+          <div class="card highlight">
+            <div class="muted">Bu ay xalis mənfəət</div>
+            <div id="kpiNet" class="kpi-val">0.00</div>
+            <div id="kpiNetSub" class="muted" style="margin-top:4px;">Xərclər və usta payı çıxılıb</div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <div class="card-title">Son 7 günün gəliri</div>
+                <div class="muted">Tamamlanmış xidmətlər üzrə</div>
+              </div>
+              <span id="weekTotalBadge" class="badge">0.00</span>
+            </div>
+            <div id="weeklyChart" class="chart-bars"></div>
+          </div>
+
+          <div class="card">
+            <div class="card-head">
+              <div>
+                <div class="card-title">Kateqoriyalar üzrə gəlir</div>
+                <div class="muted">Bu ay, tamamlanmış xidmətlər</div>
+              </div>
+              <button type="button" class="btn btn-ghost btn-sm" onclick="go('cat')">Kateqoriyalar</button>
+            </div>
+            <div id="catBreakdown"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">Yaxınlaşan rezervasiyalar</div>
+            <button type="button" class="btn btn-ghost btn-sm" onclick="go('rez')">Hamısı</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Müştəri</th>
+                  <th>Xidmət</th>
+                  <th>Əməkdaş / İcarədar</th>
+                  <th>Tarix / Saat</th>
+                  <th class="num">Məbləğ</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="dashRows"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- MALİYYƏ İCMALI -->
+      <section id="p_fin" class="page hidden">
+        <div class="card">
+          <div class="card-head" style="margin-bottom:0;">
+            <div>
+              <div class="card-title">Maliyyə icmalı</div>
+              <div class="muted">Ay üzrə gəlir, xərc, usta payı və xalis mənfəət</div>
+            </div>
+            <div class="row-actions">
+              <input id="finMonth" type="month" onchange="all()" style="width:170px;" />
+              <button type="button" class="btn btn-ghost btn-sm" onclick="exportFinCsv()">CSV yüklə</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-5">
+          <div class="card"><div class="muted">Xidmət gəliri</div><div id="finSvc" class="kpi-val">0.00</div><div id="finSvcSub" class="muted"></div></div>
+          <div class="card"><div class="muted">İcarə gəliri</div><div id="finRent" class="kpi-val">0.00</div><div id="finRentSub" class="muted"></div></div>
+          <div class="card"><div class="muted">Xərclər</div><div id="finExp" class="kpi-val">0.00</div><div id="finExpSub" class="muted"></div></div>
+          <div class="card"><div class="muted">Usta payı</div><div id="finStaff" class="kpi-val">0.00</div><div id="finStaffSub" class="muted"></div></div>
+          <div class="card highlight"><div class="muted">Xalis mənfəət</div><div id="finNet" class="kpi-val">0.00</div><div class="muted">Gəlir − xərc − usta payı</div></div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-title" style="margin-bottom:10px;">Kassa: ödəniş üsulu üzrə</div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Üsul</th><th class="num">Giriş</th><th class="num">Çıxış</th><th class="num">Qalıq</th></tr></thead>
+                <tbody id="finMethodRows"></tbody>
+              </table>
+            </div>
+            <div class="info-note">Giriş: tamamlanmış xidmətlər və alınan icarə. Çıxış: xərclər və ustalara edilən ödənişlər.</div>
+          </div>
+          <div class="card">
+            <div class="card-head">
+              <div class="card-title">Xərclər kateqoriya üzrə</div>
+              <button type="button" class="btn btn-ghost btn-sm" onclick="go('exp')">Xərclər</button>
+            </div>
+            <div id="finExpCats"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title" style="margin-bottom:4px;">Ustalara ödəniş</div>
+          <div class="muted" style="margin-bottom:10px;">Faizlə işləyən usta üçün yalnız “Tamamlandı” statuslu xidmətlər sayılır</div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Usta</th><th>Şərt</th><th class="num">Xidmət</th><th class="num">Dövriyyə</th><th class="num">Hesablanan</th><th class="num">Ödənilib</th><th class="num">Qalıq</th><th>Ödəniş et</th></tr></thead>
+              <tbody id="finStaffRows"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title" style="margin-bottom:10px;">İcarə ödənişləri</div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>İcarədar</th><th class="num">Aylıq</th><th class="num">Ödənilib</th><th class="num">Borc</th><th>Status</th><th>Ödəniş qəbul et</th></tr></thead>
+              <tbody id="finTenRows"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title" style="margin-bottom:10px;">Bu ayın ödəniş qeydləri</div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Tarix</th><th>Növ</th><th>Ad</th><th>Üsul</th><th class="num">Məbləğ</th><th></th></tr></thead>
+              <tbody id="finPayRows"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- XƏRCLƏR -->
+      <section id="p_exp" class="page hidden">
+        <div class="card">
+          <div class="card-title" style="margin-bottom:12px;">Yeni xərc</div>
+          <form id="fE" action="javascript:void(0)" onsubmit="addExp(event)">
+            <div class="grid-3">
+              <div class="field"><label>Tarix (GG.AA.İİ)</label><input id="eDate" type="text" placeholder="22.11.26" /></div>
+              <div class="field"><label>Kateqoriya</label><select id="eCat"></select></div>
+              <div class="field"><label>Məbləğ *</label><input id="eAmount" type="number" step="0.01" min="0.01" required /></div>
+              <div class="field" style="grid-column:span 2;"><label>Təsvir</label><input id="eDesc" type="text" placeholder="Məs: Noyabr elektrik pulu" /></div>
+              <div class="field"><label>Ödəniş üsulu</label><select id="eMethod"></select></div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-sm">+ Xərc əlavə et</button>
+            <div id="expMsg" class="msg hidden"></div>
+          </form>
+          <div class="info-note">Ustaların faiz və maaşlarını burada yazmayın. Onlar “Maliyyə icmalı” bölməsində avtomatik hesablanır, yoxsa iki dəfə sayılar.</div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">Xərclər siyahısı</div>
+            <div class="row-actions">
+              <input id="expMonth" type="month" onchange="all()" style="width:170px;" />
+              <span id="expTotal" class="badge">0.00</span>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Tarix</th><th>Kateqoriya</th><th>Təsvir</th><th>Üsul</th><th class="num">Məbləğ</th><th></th></tr></thead>
+              <tbody id="expRows"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- AYLIQ HESABAT -->
+      <section id="p_rep" class="page hidden">
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">Aylıq rezervasiya hesabatı</div>
+            <input id="repMonth" type="month" onchange="all()" style="width:170px;" />
+          </div>
+          <div class="grid-3" style="margin-bottom:14px;">
+            <div class="card"><div class="muted">Rezervasiya (ləğvsiz)</div><div id="repCnt" class="kpi-val">0</div></div>
+            <div class="card"><div class="muted">Tamamlanmış məbləğ</div><div id="repDone" class="kpi-val">0.00</div></div>
+            <div class="card"><div class="muted">Ləğv edilən</div><div id="repCancel" class="kpi-val">0</div></div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Tarix</th><th>Müştəri</th><th>Xidmət</th><th>Əməkdaş / İcarədar</th><th>Üsul</th><th class="num">Məbləğ</th><th>Status</th></tr></thead>
+              <tbody id="repRows"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- REZERVASİYALAR -->
+      <section id="p_rez" class="page hidden">
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">Rezervasiyalar</div>
+            <div class="row-actions">
+              <select id="fStatus" onchange="all()" style="width:160px;">
+                <option value="">Bütün statuslar</option>
+                <option value="Gözləyir">Gözləyir</option>
+                <option value="Təsdiqləndi">Təsdiqləndi</option>
+                <option value="Tamamlandı">Tamamlandı</option>
+                <option value="Ləğv edildi">Ləğv edildi</option>
+              </select>
+              <button type="button" class="btn btn-primary btn-sm" onclick="go('new')">+ Əlavə et</button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Müştəri</th>
+                  <th>Xidmət</th>
+                  <th>Əməkdaş / İcarədar</th>
+                  <th>Tarix</th>
+                  <th class="num">Məbləğ</th>
+                  <th>Ödəniş</th>
+                  <th>Status</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="rezRows"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- YENİ REZERVASİYA -->
+      <section id="p_new" class="page hidden">
+        <div class="card">
+          <div class="card-title" style="margin-bottom:14px;">Yeni rezervasiya</div>
+          <form id="fR" action="javascript:void(0)" onsubmit="saveRez(event)">
+            <div class="grid-2">
+              <div class="field"><label>Müştəri adı *</label><input id="rCust" type="text" required placeholder="Müştəri adı" /></div>
+              <div class="field"><label>Telefon</label><input id="rPhone" type="text" placeholder="+994..." /></div>
+              <div class="field"><label>Xidmət</label><select id="rSrv" onchange="syncSrvPrice()"></select></div>
+              <div class="field"><label>Əməkdaş / İcarədar</label><select id="rAssignee"></select></div>
+              <div class="field"><label>Tarix (GG.AA.İİ)</label><input id="rDate" type="text" placeholder="22.11.26" /></div>
+              <div class="field"><label>Saat</label><input id="rTime" type="time" value="12:00" /></div>
+              <div class="field"><label>Məbləğ</label><input id="rPrice" type="number" step="0.01" min="0" value="0" /></div>
+              <div class="field"><label>Ödəniş üsulu</label><select id="rPay"></select></div>
+              <div class="field">
+                <label>Status</label>
+                <select id="rStatus">
+                  <option value="Gözləyir">Gözləyir</option>
+                  <option value="Təsdiqləndi">Təsdiqləndi</option>
+                  <option value="Tamamlandı">Tamamlandı</option>
+                  <option value="Ləğv edildi">Ləğv edildi</option>
+                </select>
+              </div>
+            </div>
+            <div class="field"><label>Qeyd</label><textarea id="rNote" placeholder="Əlavə qeydlər..."></textarea></div>
+            <div class="row-actions">
+              <button type="submit" class="btn btn-primary">Yadda saxla</button>
+              <button type="button" class="btn btn-ghost" onclick="go('rez')">İmtina</button>
+            </div>
+            <div id="rezMsg" class="msg hidden"></div>
+          </form>
+        </div>
+      </section>
+
+      <!-- XİDMƏTLƏR -->
+      <section id="p_srv" class="page hidden">
+        <div class="card">
+          <div class="card-title" style="margin-bottom:12px;">Yeni xidmət</div>
+          <form id="fS" action="javascript:void(0)" onsubmit="addSrv(event)" class="grid-3">
+            <div class="field"><label>Xidmət adı *</label><input id="sName" type="text" required placeholder="Məs: Saç kəsimi" /></div>
+            <div class="field"><label>Kateqoriya</label><select id="sCat"></select></div>
+            <div class="field"><label>Qiymət</label><input id="sPrice" type="number" step="0.01" min="0" value="0" /></div>
+            <div style="grid-column:1/-1;"><button type="submit" class="btn btn-primary btn-sm">+ Xidmət əlavə et</button></div>
+          </form>
+        </div>
+        <div class="card">
+          <div class="card-title" style="margin-bottom:10px;">Xidmətlər siyahısı</div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Xidmət</th><th>Kateqoriya</th><th class="num">Qiymət</th><th></th></tr></thead>
+              <tbody id="srvRows"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- KATEQORİYALAR -->
+      <section id="p_cat" class="page hidden">
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-title" style="margin-bottom:12px;">Xidmət kateqoriyaları</div>
+            <form action="javascript:void(0)" onsubmit="addCat(event, 'cats', 'cName')" style="display:flex;gap:10px;margin-bottom:14px;">
+              <input id="cName" type="text" required placeholder="Yeni kateqoriya" />
+              <button type="submit" class="btn btn-primary btn-sm">Əlavə et</button>
+            </form>
+            <div id="catList" class="row-actions"></div>
+          </div>
+          <div class="card">
+            <div class="card-title" style="margin-bottom:12px;">Xərc kateqoriyaları</div>
+            <form action="javascript:void(0)" onsubmit="addCat(event, 'expCats', 'ecName')" style="display:flex;gap:10px;margin-bottom:14px;">
+              <input id="ecName" type="text" required placeholder="Yeni xərc kateqoriyası" />
+              <button type="submit" class="btn btn-primary btn-sm">Əlavə et</button>
+            </form>
+            <div id="expCatList" class="row-actions"></div>
+          </div>
+        </div>
+        <div class="muted">İstifadə olunmayan kateqoriyanı × ilə silmək olar.</div>
+      </section>
+
+      <!-- ƏMƏKDAŞLAR -->
+      <section id="p_staff" class="page hidden">
+        <div class="card">
+          <div class="card-title" style="margin-bottom:12px;">Yeni əməkdaş</div>
+          <form id="fV" action="javascript:void(0)" onsubmit="addStaff(event)" class="grid-4">
+            <div class="field"><label>Ad *</label><input id="vName" type="text" required /></div>
+            <div class="field"><label>Vəzifə</label><input id="vRole" type="text" placeholder="Məs: Usta" /></div>
+            <div class="field">
+              <label>Ödəniş növü</label>
+              <select id="vType">
+                <option value="percent">Faiz (xidmətdən %)</option>
+                <option value="salary">Aylıq sabit maaş</option>
+              </select>
+            </div>
+            <div class="field"><label>Dəyər (% və ya məbləğ)</label><input id="vFee" type="number" step="0.01" min="0" value="40" /></div>
+            <div style="grid-column:1/-1;"><button type="submit" class="btn btn-primary btn-sm">+ Əlavə et</button></div>
+          </form>
+        </div>
+        <div class="card">
+          <div class="card-title" style="margin-bottom:10px;">Əməkdaşlar</div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Ad</th><th>Vəzifə</th><th>Ödəniş şərti</th><th class="num">Bu ay dövriyyə</th><th class="num">Bu ay hesablanan</th><th></th></tr></thead>
+              <tbody id="staffRows"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- İCARƏDARLAR -->
+      <section id="p_ten" class="page hidden">
+        <div class="card">
+          <div class="card-title" style="margin-bottom:12px;">Yeni icarədar</div>
+          <form id="fT" action="javascript:void(0)" onsubmit="addTenant(event)" class="grid-3">
+            <div class="field"><label>Ad / Sahə *</label><input id="tName" type="text" required /></div>
+            <div class="field"><label>İstiqamət</label><input id="tRole" type="text" placeholder="Məs: Vizaj / Dırnaq" /></div>
+            <div class="field"><label>Aylıq icarə</label><input id="tFee" type="number" step="0.01" min="0" value="0" /></div>
+            <div style="grid-column:1/-1;"><button type="submit" class="btn btn-primary btn-sm">+ Əlavə et</button></div>
+          </form>
+          <div class="info-note">İcarədarın müştərilərindən gələn pul salonun gəlirinə yazılmır. Salon yalnız aylıq icarə alır. İcarə ödənişini “Maliyyə icmalı” bölməsində qəbul edin.</div>
+        </div>
+        <div class="card">
+          <div class="card-title" style="margin-bottom:10px;">İcarədarlar</div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Ad / Sahə</th><th>İstiqamət</th><th class="num">Aylıq icarə</th><th>Bu ay</th><th></th></tr></thead>
+              <tbody id="tenRows"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- MÜŞTƏRİLƏR -->
+      <section id="p_cust" class="page hidden">
+        <div class="card">
+          <div class="card-title" style="margin-bottom:10px;">Müştərilər</div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Müştəri</th><th>Telefon</th><th class="num">Rezervasiya</th><th>Son gəliş</th><th class="num">Ödəniş (tamamlanmış)</th></tr></thead>
+              <tbody id="custRows"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- REMINDER -->
+      <section id="p_rem" class="page hidden">
+        <div class="card">
+          <div class="card-title" style="margin-bottom:12px;">Yeni reminder</div>
+          <form id="fRm" action="javascript:void(0)" onsubmit="addRem(event)" class="grid-3">
+            <div class="field"><label>Qeyd / Xatırlatma *</label><input id="rmText" type="text" required placeholder="Xatırlatma mətni" /></div>
+            <div class="field"><label>Tarix (GG.AA.İİ)</label><input id="rmDate" type="text" placeholder="22.11.26" /></div>
+            <div class="field" style="display:flex;align-items:flex-end;"><button type="submit" class="btn btn-primary btn-sm w-full">+ Əlavə et</button></div>
+          </form>
+        </div>
+        <div class="card">
+          <div class="card-title" style="margin-bottom:10px;">Reminder siyahısı</div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Mətn</th><th>Tarix</th><th>Status</th><th></th></tr></thead>
+              <tbody id="remRows"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- JURNAL -->
+      <section id="p_jur" class="page hidden">
+        <div class="card">
+          <div class="card-title" style="margin-bottom:10px;">Əməliyyat jurnalı</div>
+          <div id="jurList"></div>
+        </div>
+      </section>
+
+      <!-- AYARLAR -->
+      <section id="p_auto" class="page hidden">
+        <div class="card">
+          <div class="card-title" style="margin-bottom:12px;">Salon ayarları</div>
+          <form id="fSet" action="javascript:void(0)" onsubmit="saveSettings(event)" class="grid-2">
+            <div class="field"><label>Salon adı</label><input id="setSalonName" type="text" placeholder="Salon" /></div>
+            <div class="field"><label>Valyuta</label><input id="setCurrency" type="text" value="AZN" /></div>
+            <div style="grid-column:1/-1;"><button type="submit" class="btn btn-primary">Ayarları saxla</button></div>
+          </form>
+          <div id="setMsg" class="msg hidden"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="undoBar" class="undo-bar hidden">
+    <span id="undoText">Qeyd silindi</span>
+    <button type="button" class="btn btn-primary btn-sm" onclick="undoDelete()">Geri qaytar</button>
+  </div>
+
+  <script>
+    const SB_URL = 'https://ykcfsqbuustvderioxph.supabase.co';
+    const SB_KEY = 'sb_publishable_6tdzSskT4VmGLQBu8QU95A_3T8V1Dn_';
+    const USER_DOMAIN = 'salon.local';
+
+    const STATUSES = ['Gözləyir', 'Təsdiqləndi', 'Tamamlandı', 'Ləğv edildi'];
+    const PAY_METHODS = ['Nağd', 'Kart', 'Köçürmə'];
+    const MONTHS = ['Yanvar', 'Fevral', 'Mart', 'Aprel', 'May', 'İyun', 'İyul', 'Avqust', 'Sentyabr', 'Oktyabr', 'Noyabr', 'Dekabr'];
+
+    const $ = (s) => document.querySelector(s);
+    const $$ = (s) => Array.from(document.querySelectorAll(s));
+
+    /* ---------- Köməkçilər ---------- */
+
+    function uid() {
+      return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+    }
+
+    function esc(v) {
+      return String(v ?? '').replace(/[&<>"']/g, (m) => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      }[m]));
+    }
+
+    function fmtDate(d = new Date()) {
+      const dt = d instanceof Date ? d : new Date(d);
+      const dd = String(dt.getDate()).padStart(2, '0');
+      const mm = String(dt.getMonth() + 1).padStart(2, '0');
+      const yy = String(dt.getFullYear()).slice(-2);
+      return `${dd}.${mm}.${yy}`;
+    }
+
+    // "5.3.26", "05.03.2026", "05/03/26" -> Date
+    function parseD(s) {
+      const m = /^(\d{1,2})[./-](\d{1,2})[./-](\d{2}|\d{4})$/.exec(String(s || '').trim());
+      if (!m) return null;
+      let y = Number(m[3]);
+      if (y < 100) y += 2000;
+      const d = new Date(y, Number(m[2]) - 1, Number(m[1]));
+      if (d.getMonth() !== Number(m[2]) - 1) return null;
+      return d;
+    }
+
+    function normD(s) {
+      const d = parseD(s);
+      return d ? fmtDate(d) : null;
+    }
+
+    const monthOfDate = (s) => (normD(s) || '').slice(3);
+    const curMonth = () => fmtDate().slice(3);
+
+    function recSortKey(r) {
+      const d = parseD(r.date);
+      const [hh, mi] = String(r.time || '00:00').split(':').map(Number);
+      return (d ? d.getTime() : 0) + ((hh || 0) * 60 + (mi || 0)) * 60000;
+    }
+
+    function monthInputDefault() {
+      const d = new Date();
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+    }
+
+    // <input type="month"> "2026-11" -> "11.26"
+    function monthFromInput(sel) {
+      const v = $(sel)?.value || '';
+      const m = /^(\d{4})-(\d{2})$/.exec(v);
+      return m ? `${m[2]}.${m[1].slice(2)}` : curMonth();
+    }
+
+    function monthLabel(m) {
+      const [mm, yy] = String(m).split('.');
+      return `${MONTHS[Number(mm) - 1] || mm} 20${yy}`;
+    }
+
+    function getCurrency() {
+      return (state?.settings?.currency || 'AZN').trim() || 'AZN';
+    }
+
+    const n2 = (v) => (Number(v) || 0).toFixed(2);
+    const money = (v) => `${n2(v)} ${getCurrency()}`;
+    const sum = (arr, f = (x) => x.amount) => arr.reduce((a, b) => a + (Number(f(b)) || 0), 0);
+    const isTenantRec = (r) => String(r.assignee || '').startsWith('İcarədar:');
+
+    function showMsg(sel, text, mode = 'err') {
+      const el = $(sel);
+      if (!el) return;
+      el.textContent = text;
+      el.className = `msg ${mode}`;
+      el.classList.remove('hidden');
+      clearTimeout(el._t);
+      el._t = setTimeout(() => el.classList.add('hidden'), 4000);
+    }
+
+    function showAuthMsg(text, mode = 'err') {
+      const el = $('#authMsg');
+      if (!el) return;
+      el.textContent = text;
+      el.className = `msg ${mode}`;
+      el.classList.remove('hidden');
+    }
+
+    function methodOptions(selected) {
+      return PAY_METHODS.map((m) => `<option value="${m}" ${m === selected ? 'selected' : ''}>${m}</option>`).join('');
+    }
+
+    /* ---------- Supabase ---------- */
+
+    let sb = null;
+    try {
+      if (window.supabase && typeof window.supabase.createClient === 'function' && SB_KEY) {
+        sb = window.supabase.createClient(SB_URL, SB_KEY, {
+          auth: { persistSession: true, autoRefreshToken: true }
+        });
+      }
+    } catch (err) {
+      showAuthMsg(`Supabase başlanğıc xətası: ${err?.message || err}`, 'warn');
+    }
+
+    /* ---------- Vəziyyət ---------- */
+
+    function defaultState() {
+      return {
+        settings: { salonName: 'Salon', currency: 'AZN', theme: 'light' },
+        cats: ['Ümumi', 'Saç', 'Dırnaq', 'Vizaj'],
+        expCats: ['Kommunal', 'Material', 'Salon icarəsi', 'Reklam', 'Vergi', 'Digər'],
+        services: [],
+        tenants: [],
+        staff: [],
+        rems: [],
+        expenses: [],
+        rentPays: [],
+        staffPays: [],
+        journal: []
+      };
+    }
+
+    let currentUser = null;
+    let isLocalPreview = false;
+    let state = defaultState();
+    let recs = [];
+    let lastDeleted = null;
+    let undoTimer = null;
+    let dbSubState = null;
+    let dbSubRecs = null;
+    let isMutatingCloud = false;
+
+    function withIds(arr) {
+      return (Array.isArray(arr) ? arr : [])
+        .filter((x) => x && typeof x === 'object')
+        .map((x) => ({ ...x, id: x.id != null && x.id !== '' ? String(x.id) : uid() }));
+    }
+
+    function cleanList(arr, fallback) {
+      const list = Array.isArray(arr) ? Array.from(new Set(arr.map((c) => String(c).trim()).filter(Boolean))) : [];
+      return list.length ? list : [...fallback];
+    }
+
+    function normalizeState(rawState) {
+      const base = defaultState();
+      const raw = rawState && typeof rawState === 'object' ? rawState : {};
+      const merged = {
+        ...base,
+        ...raw,
+        settings: { ...base.settings, ...(raw.settings && typeof raw.settings === 'object' ? raw.settings : {}) }
+      };
+      merged.cats = cleanList(merged.cats, base.cats);
+      merged.expCats = cleanList(merged.expCats, base.expCats);
+
+      merged.services = withIds(merged.services).map((s) => ({
+        id: s.id,
+        name: String(s.name || '').trim(),
+        cat: String(s.cat || merged.cats[0] || 'Ümumi').trim() || 'Ümumi',
+        price: Math.max(0, Number(s.price) || 0)
+      })).filter((s) => s.name);
+
+      merged.tenants = withIds(merged.tenants).map((t) => ({
+        id: t.id,
+        name: String(t.name || '').trim(),
+        role: String(t.role || ''),
+        fee: Math.max(0, Number(t.fee) || 0)
+      })).filter((t) => t.name);
+
+      merged.staff = withIds(merged.staff).map((s) => {
+        const fee = Math.max(0, Number(s.fee) || 0);
+        // köhnə qeydlərdə növ yoxdur: 100-dən böyükdürsə maaş, əks halda faiz
+        const payType = s.payType === 'salary' || s.payType === 'percent' ? s.payType : (fee > 100 ? 'salary' : 'percent');
+        return { id: s.id, name: String(s.name || '').trim(), role: String(s.role || ''), fee, payType };
+      }).filter((s) => s.name);
+
+      merged.rems = withIds(merged.rems).map((r) => ({ ...r, done: !!r.done }));
+
+      merged.expenses = withIds(merged.expenses).map((e) => ({
+        id: e.id,
+        date: normD(e.date) || fmtDate(),
+        cat: String(e.cat || 'Digər'),
+        desc: String(e.desc || ''),
+        amount: Math.max(0, Number(e.amount) || 0),
+        method: PAY_METHODS.includes(e.method) ? e.method : 'Nağd'
+      }));
+
+      const normPay = (p) => ({
+        id: p.id,
+        name: String(p.name || ''),
+        month: String(p.month || curMonth()),
+        amount: Math.max(0, Number(p.amount) || 0),
+        method: PAY_METHODS.includes(p.method) ? p.method : 'Nağd',
+        date: normD(p.date) || fmtDate()
+      });
+      merged.rentPays = withIds(merged.rentPays).map(normPay);
+      merged.staffPays = withIds(merged.staffPays).map(normPay);
+
+      merged.journal = Array.isArray(merged.journal) ? merged.journal.slice(0, 300) : [];
+      return merged;
+    }
+
+    function normalizeRec(r) {
+      return {
+        ...r,
+        date: normD(r.date) || r.date || fmtDate(),
+        price: Math.max(0, Number(r.price) || 0),
+        status: STATUSES.includes(r.status) ? r.status : 'Gözləyir',
+        payMethod: PAY_METHODS.includes(r.payMethod) ? r.payMethod : 'Nağd'
+      };
+    }
+
+    function localKey() {
+      return `salon_panel_${currentUser?.id || 'preview_user'}`;
+    }
+
+    function saveLocal() {
+      if (!currentUser) return;
+      try {
+        localStorage.setItem(localKey(), JSON.stringify({ state: normalizeState(state), recs }));
+      } catch (_) {}
+    }
+
+    function loadLocal() {
+      if (!currentUser) return;
+      try {
+        const raw = localStorage.getItem(localKey());
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          state = normalizeState(parsed.state);
+          recs = Array.isArray(parsed.recs) ? parsed.recs.map(normalizeRec) : [];
+        } else {
+          state = defaultState();
+          recs = [];
+        }
+      } catch (_) {
+        state = defaultState();
+        recs = [];
+      }
+    }
+
+    function setCloudStatus(mode, detail = '') {
+      const el = $('#cloudBadge');
+      if (!el) return;
+      if (mode === 'ok') {
+        el.className = 'cloud-status ok';
+        el.textContent = 'Şəxsi bulud bazası aktivdir';
+      } else if (mode === 'warn') {
+        el.className = 'cloud-status warn';
+        el.textContent = detail || 'Yerli rejim aktivdir';
+      } else {
+        el.className = 'cloud-status err';
+        el.textContent = detail ? `Bulud xətası: ${detail}` : 'Bulud bağlantısı kəsildi';
+      }
+    }
+
+    /* ---------- Giriş ---------- */
+
+    async function enterLocalPreviewSession() {
+      isLocalPreview = true;
+      await applySession({ user: { id: 'local_preview_user', email: 'Yerli rejim' } });
+    }
+
+    let loginBusy = false;
+    async function handleLogin(e) {
+      if (e && typeof e.preventDefault === 'function') e.preventDefault();
+      if (loginBusy) return;
+      const btn = $('#loginBtn');
+      const login = ($('#authUser')?.value || '').trim().toLowerCase();
+      const password = $('#authPass')?.value || '';
+      if (!login || !password) {
+        showAuthMsg('İstifadəçi adı və parolu daxil edin.', 'err');
+        return;
+      }
+      if (!sb) {
+        showAuthMsg('Serverə qoşulmaq olmadı. İnterneti yoxlayın, səhifəni yeniləyin və ya yerli rejimdə daxil olun.', 'err');
+        return;
+      }
+      // istifadəçi adı -> daxili e-poçt (ad@salon.local); köhnə e-poçtlu hesablar da işləyir
+      const email = login.includes('@') ? login : `${login}@${USER_DOMAIN}`;
+
+      loginBusy = true;
+      if (btn) btn.disabled = true;
+      showAuthMsg('Giriş yoxlanılır...', 'warn');
+      try {
+        const { data, error } = await sb.auth.signInWithPassword({ email, password });
+        if (error) {
+          showAuthMsg(error.message === 'Invalid login credentials' ? 'İstifadəçi adı və ya parol yanlışdır.' : error.message, 'err');
+        } else if (data?.session) {
+          isLocalPreview = false;
+          $('#authMsg').classList.add('hidden');
+          await applySession(data.session);
+        } else {
+          showAuthMsg('Sessiya yaradılmadı.', 'err');
+        }
+      } catch (err) {
+        showAuthMsg(`Bağlantı xətası: ${err?.message || err}`, 'err');
+      } finally {
+        loginBusy = false;
+        if (btn) btn.disabled = false;
+      }
+    }
+
+    async function handleLogout() {
+      if (dbSubState && sb) { sb.removeChannel(dbSubState); dbSubState = null; }
+      if (dbSubRecs && sb) { sb.removeChannel(dbSubRecs); dbSubRecs = null; }
+      if (sb && !isLocalPreview) {
+        try { await sb.auth.signOut(); } catch (_) {}
+      }
+      isLocalPreview = false;
+      state = defaultState();
+      recs = [];
+      await applySession(null);
+    }
+
+    /* ---------- Tema ---------- */
+
+    const darkMQ = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+
+    function applyThemeClass(th) {
+      $$('.theme-btn').forEach((b) => b.classList.toggle('active', b.dataset.th === th));
+      const dark = th === 'dark' || (th === 'auto' && !!darkMQ?.matches);
+      document.body.classList.toggle('dark', dark);
+    }
+
+    function setTheme(th, skipSync = false) {
+      state.settings.theme = th;
+      applyThemeClass(th);
+      if (skipSync) return;
+      saveLocal();
+      if (currentUser && !isLocalPreview) syncStateCloud();
+    }
+
+    darkMQ?.addEventListener?.('change', () => {
+      if (state.settings.theme === 'auto') applyThemeClass('auto');
+    });
+
+    /* ---------- Naviqasiya ---------- */
+
+    const TITLES = {
+      dash: 'Dashboard', fin: 'Maliyyə icmalı', exp: 'Xərclər', rep: 'Aylıq hesabat',
+      rez: 'Rezervasiyalar', new: 'Yeni rezervasiya', srv: 'Xidmətlər', cat: 'Kateqoriyalar',
+      staff: 'Əməkdaşlar', ten: 'İcarədarlar', cust: 'Müştərilər',
+      rem: 'Reminder', jur: 'Jurnal', auto: 'Ayarlar'
+    };
+
+    function go(p) {
+      $$('.page').forEach((sec) => sec.classList.add('hidden'));
+      $(`#p_${p}`)?.classList.remove('hidden');
+      $$('.nav-item').forEach((btn) => btn.classList.toggle('active', btn.dataset.p === p));
+      $('#pageTitle').textContent = TITLES[p] || 'Salon Panel';
+      if (p === 'new' || p === 'exp') fillSelects();
+      all();
+      window.scrollTo({ top: 0 });
+    }
+
+    function logAction(text) {
+      state.journal = state.journal || [];
+      state.journal.unshift({ text, date: fmtDate(), time: new Date().toTimeString().slice(0, 5) });
+      state.journal = state.journal.slice(0, 300);
+    }
+
+    /* ---------- Bulud sinxronizasiyası ---------- */
+
+    async function syncStateCloud() {
+      if (!currentUser) return;
+      state = normalizeState(state);
+      saveLocal();
+      if (isLocalPreview || !sb) {
+        setCloudStatus('warn', 'Yerli yaddaş aktivdir');
+        return;
+      }
+      isMutatingCloud = true;
+      try {
+        const { error } = await sb.from('salon_state').upsert({
+          id: `salon_${currentUser.id}`,
+          user_id: currentUser.id,
+          data: state,
+          updated_at: new Date().toISOString()
+        }, { onConflict: 'id' });
+        if (error) setCloudStatus('err', error.message);
+        else setCloudStatus('ok');
+      } catch (err) {
+        setCloudStatus('err', err?.message || 'yazılmadı');
+      } finally {
+        setTimeout(() => { isMutatingCloud = false; }, 250);
+      }
+    }
+
+    async function upsertRecordCloud(rec) {
+      if (!currentUser || !rec?.id) return;
+      saveLocal();
+      if (isLocalPreview || !sb) {
+        setCloudStatus('warn', 'Yerli yaddaş aktivdir');
+        return;
+      }
+      isMutatingCloud = true;
+      try {
+        const { error } = await sb.from('records').upsert({
+          id: rec.id,
+          user_id: currentUser.id,
+          data: rec,
+          updated_at: new Date().toISOString()
+        }, { onConflict: 'id' });
+        if (error) setCloudStatus('err', error.message);
+        else setCloudStatus('ok');
+      } catch (err) {
+        setCloudStatus('err', err?.message || 'yazılmadı');
+      } finally {
+        setTimeout(() => { isMutatingCloud = false; }, 250);
+      }
+    }
+
+    async function deleteRecordCloud(recId) {
+      if (!currentUser || !recId) return;
+      saveLocal();
+      if (isLocalPreview || !sb) {
+        setCloudStatus('warn', 'Yerli yaddaş aktivdir');
+        return;
+      }
+      isMutatingCloud = true;
+      try {
+        const { error } = await sb.from('records').delete().eq('id', recId).eq('user_id', currentUser.id);
+        if (error) setCloudStatus('err', error.message);
+        else setCloudStatus('ok');
+      } catch (err) {
+        setCloudStatus('err', err?.message || 'silinmədi');
+      } finally {
+        setTimeout(() => { isMutatingCloud = false; }, 250);
+      }
+    }
+
+    async function loadUserCloudData() {
+      loadLocal();
+      if (isLocalPreview || !sb) {
+        setCloudStatus('warn', 'Yerli yaddaş aktivdir');
+      } else {
+        try {
+          const stRes = await sb.from('salon_state').select('data').eq('id', `salon_${currentUser.id}`).eq('user_id', currentUser.id).maybeSingle();
+          if (stRes.error) setCloudStatus('err', stRes.error.message);
+          else {
+            setCloudStatus('ok');
+            if (stRes.data?.data) state = normalizeState(stRes.data.data);
+          }
+          const rcRes = await sb.from('records').select('id, data').eq('user_id', currentUser.id);
+          if (rcRes.error) setCloudStatus('err', rcRes.error.message);
+          else recs = (rcRes.data || []).map((row) => normalizeRec({ ...(row.data || {}), id: row.id }));
+        } catch (err) {
+          setCloudStatus('err', err?.message || 'Bulud oxunmadı');
+        }
+      }
+
+      saveLocal();
+      setTheme(state.settings?.theme || 'light', true);
+      $('#setSalonName').value = state.settings?.salonName || 'Salon';
+      $('#setCurrency').value = getCurrency();
+      $('#sideSalonTitle').textContent = state.settings?.salonName || 'Salon';
+      $('#rDate').value = fmtDate();
+      $('#rmDate').value = fmtDate();
+      $('#eDate').value = fmtDate();
+      ['#finMonth', '#expMonth', '#repMonth'].forEach((s) => { if (!$(s).value) $(s).value = monthInputDefault(); });
+      fillSelects();
+      all();
+
+      if (!isLocalPreview && sb) subscribeRealtime();
+    }
+
+    function subscribeRealtime() {
+      if (dbSubState) { try { sb.removeChannel(dbSubState); } catch (_) {} dbSubState = null; }
+      if (dbSubRecs) { try { sb.removeChannel(dbSubRecs); } catch (_) {} dbSubRecs = null; }
+
+      const supportsRealtime = typeof window.WebSocket === 'function' && !/usercontent\.goog|scf\.usercontent/.test(window.location.hostname || '');
+      if (!supportsRealtime) return;
+      try {
+        dbSubState = sb.channel(`st_${currentUser.id}`)
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'salon_state', filter: `user_id=eq.${currentUser.id}` }, (payload) => {
+            if (isMutatingCloud) return;
+            if (payload.new?.data) {
+              state = normalizeState(payload.new.data);
+              saveLocal();
+              fillSelects();
+              all();
+            }
+          }).subscribe((_status, err) => {
+            if (err) setCloudStatus('warn', 'Realtime bloklandı, REST aktivdir');
+          });
+
+        dbSubRecs = sb.channel(`rc_${currentUser.id}`)
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'records', filter: `user_id=eq.${currentUser.id}` }, (payload) => {
+            if (isMutatingCloud) return;
+            if (payload.eventType === 'DELETE') {
+              recs = recs.filter((x) => x.id !== payload.old?.id);
+            } else if (payload.new?.id) {
+              const item = normalizeRec({ ...(payload.new.data || {}), id: payload.new.id });
+              const idx = recs.findIndex((x) => x.id === item.id);
+              if (idx >= 0) recs[idx] = item; else recs.unshift(item);
+            }
+            saveLocal();
+            all();
+          }).subscribe((_status, err) => {
+            if (err) setCloudStatus('warn', 'Realtime bloklandı, REST aktivdir');
+          });
+      } catch (_) {
+        setCloudStatus('warn', 'Realtime bloklandı, REST aktivdir');
+      }
+    }
+
+    /* ---------- Seçim siyahıları ---------- */
+
+    function fillSelects() {
+      const cur = getCurrency();
+      $('#sCat').innerHTML = state.cats.map((c) => `<option value="${esc(c)}">${esc(c)}</option>`).join('');
+      $('#eCat').innerHTML = state.expCats.map((c) => `<option value="${esc(c)}">${esc(c)}</option>`).join('');
+      $('#rSrv').innerHTML = '<option value="">Xidmət seçin</option>' +
+        state.services.map((s) => `<option value="${esc(s.id)}" data-price="${s.price}">${esc(s.name)} (${n2(s.price)} ${esc(cur)})</option>`).join('');
+      const opts = [
+        ...state.staff.map((x) => `Əməkdaş: ${x.name}`),
+        ...state.tenants.map((x) => `İcarədar: ${x.name}`)
+      ];
+      $('#rAssignee').innerHTML = '<option value="">Seçilməyib</option>' + opts.map((o) => `<option value="${esc(o)}">${esc(o)}</option>`).join('');
+      if (!$('#rPay').options.length) $('#rPay').innerHTML = methodOptions('Nağd');
+      if (!$('#eMethod').options.length) $('#eMethod').innerHTML = methodOptions('Nağd');
+    }
+
+    function syncSrvPrice() {
+      const sel = $('#rSrv');
+      const opt = sel?.options[sel.selectedIndex];
+      if (opt && opt.value !== '') $('#rPrice').value = Number(opt.dataset.price) || 0;
+    }
+
+    /* ---------- Rezervasiyalar ---------- */
+
+    async function saveRez(e) {
+      if (e && typeof e.preventDefault === 'function') e.preventDefault();
+      if (!currentUser) return;
+      const cust = ($('#rCust').value || '').trim();
+      if (!cust) return;
+      const rawDate = ($('#rDate').value || '').trim();
+      const date = rawDate ? normD(rawDate) : fmtDate();
+      if (!date) {
+        showMsg('#rezMsg', 'Tarix düzgün deyil. Format: GG.AA.İİ (məs: 22.11.26)');
+        return;
+      }
+      const srv = state.services.find((s) => s.id === $('#rSrv').value);
+      const rec = normalizeRec({
+        id: `${currentUser.id}_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+        cust,
+        phone: ($('#rPhone').value || '').trim(),
+        srv: srv ? srv.name : 'Xidmət',
+        assignee: $('#rAssignee').value || '',
+        date,
+        time: $('#rTime').value || '12:00',
+        price: $('#rPrice').value,
+        payMethod: $('#rPay').value,
+        status: $('#rStatus').value || 'Gözləyir',
+        note: ($('#rNote').value || '').trim()
+      });
+      recs.unshift(rec);
+      logAction(`Rezervasiya əlavə edildi: ${rec.cust} (${rec.date})`);
+      await Promise.all([upsertRecordCloud(rec), syncStateCloud()]);
+      $('#fR').reset();
+      $('#rDate').value = fmtDate();
+      go('rez');
+    }
+
+    async function setRezField(id, field, value) {
+      const r = recs.find((x) => x.id === id);
+      if (!r) return;
+      r[field] = value;
+      logAction(field === 'status' ? `Status dəyişdi (${r.cust}): ${value}` : `Ödəniş üsulu dəyişdi (${r.cust}): ${value}`);
+      await Promise.all([upsertRecordCloud(r), syncStateCloud()]);
+      all();
+    }
+
+    async function delRez(id) {
+      const idx = recs.findIndex((x) => x.id === id);
+      if (idx < 0) return;
+      const [removed] = recs.splice(idx, 1);
+      lastDeleted = { kind: 'rec', item: removed };
+      logAction(`Rezervasiya silindi: ${removed.cust}`);
+      showUndo(`"${removed.cust}" silindi`);
+      all();
+      await Promise.all([deleteRecordCloud(id), syncStateCloud()]);
+    }
+
+    /* ---------- Ümumi silmə / geri qaytarma ---------- */
+
+    function itemLabel(it) {
+      return it?.name || it?.text || it?.desc || it?.cat || 'Qeyd';
+    }
+
+    function showUndo(label) {
+      const bar = $('#undoBar');
+      $('#undoText').textContent = label;
+      bar.classList.remove('hidden');
+      clearTimeout(undoTimer);
+      undoTimer = setTimeout(() => {
+        bar.classList.add('hidden');
+        lastDeleted = null;
+      }, 6000);
+    }
+
+    async function delItem(key, id) {
+      const arr = state[key] || [];
+      const idx = arr.findIndex((x) => String(x.id) === String(id));
+      if (idx < 0) return;
+      const [removed] = arr.splice(idx, 1);
+      lastDeleted = { kind: 'list', key, index: idx, item: removed };
+      logAction(`Silindi: ${itemLabel(removed)}`);
+      showUndo(`"${itemLabel(removed)}" silindi`);
+      fillSelects();
+      all();
+      await syncStateCloud();
+    }
+
+    async function undoDelete() {
+      if (!lastDeleted) return;
+      const d = lastDeleted;
+      lastDeleted = null;
+      clearTimeout(undoTimer);
+      $('#undoBar').classList.add('hidden');
+
+      if (d.kind === 'rec') {
+        recs.unshift(d.item);
+        logAction(`Rezervasiya bərpa edildi: ${d.item.cust}`);
+        fillSelects();
+        all();
+        await Promise.all([upsertRecordCloud(d.item), syncStateCloud()]);
+      } else if (d.kind === 'list') {
+        const arr = state[d.key];
+        arr.splice(Math.min(d.index, arr.length), 0, d.item);
+        logAction(`Bərpa edildi: ${itemLabel(d.item)}`);
+        fillSelects();
+        all();
+        await syncStateCloud();
+      }
+    }
+
+    /* ---------- Xidmət / kateqoriya ---------- */
+
+    async function addSrv(e) {
+      e?.preventDefault?.();
+      const name = ($('#sName').value || '').trim();
+      if (!name) return;
+      state.services.push({ id: uid(), name, cat: $('#sCat').value || 'Ümumi', price: Math.max(0, Number($('#sPrice').value) || 0) });
+      logAction(`Xidmət əlavə edildi: ${name}`);
+      $('#fS').reset();
+      fillSelects();
+      all();
+      await syncStateCloud();
+    }
+
+    async function addCat(e, key, inputId) {
+      e?.preventDefault?.();
+      const name = ($(`#${inputId}`).value || '').trim();
+      if (!name) return;
+      if (!state[key].includes(name)) {
+        state[key].push(name);
+        logAction(`Kateqoriya əlavə edildi: ${name}`);
+      }
+      $(`#${inputId}`).value = '';
+      fillSelects();
+      all();
+      await syncStateCloud();
+    }
+
+    async function delCat(key, name) {
+      const used = key === 'cats'
+        ? state.services.some((s) => s.cat === name)
+        : state.expenses.some((x) => x.cat === name);
+      if (used) return;
+      state[key] = state[key].filter((c) => c !== name);
+      if (!state[key].length) state[key] = [...defaultState()[key]];
+      logAction(`Kateqoriya silindi: ${name}`);
+      fillSelects();
+      all();
+      await syncStateCloud();
+    }
+
+    /* ---------- Reminder ---------- */
+
+    async function addRem(e) {
+      e?.preventDefault?.();
+      const text = ($('#rmText').value || '').trim();
+      if (!text) return;
+      const date = normD($('#rmDate').value) || fmtDate();
+      state.rems.unshift({ id: uid(), text, date, done: false });
+      logAction(`Reminder əlavə edildi: ${text}`);
+      $('#rmText').value = '';
+      all();
+      await syncStateCloud();
+    }
+
+    async function toggleRem(id) {
+      const r = state.rems.find((x) => String(x.id) === String(id));
+      if (!r) return;
+      r.done = !r.done;
+      logAction(`Reminder ${r.done ? 'bağlandı' : 'açıldı'}: ${r.text}`);
+      all();
+      await syncStateCloud();
+    }
+
+    /* ---------- Əməkdaş / icarədar ---------- */
+
+    async function addStaff(e) {
+      e?.preventDefault?.();
+      const name = ($('#vName').value || '').trim();
+      if (!name) return;
+      if (state.staff.some((s) => s.name === name)) {
+        alertInline('#fV', 'Bu adda əməkdaş artıq var.');
+        return;
+      }
+      state.staff.push({
+        id: uid(), name,
+        role: ($('#vRole').value || '').trim(),
+        payType: $('#vType').value === 'salary' ? 'salary' : 'percent',
+        fee: Math.max(0, Number($('#vFee').value) || 0)
+      });
+      logAction(`Əməkdaş əlavə edildi: ${name}`);
+      $('#fV').reset();
+      fillSelects();
+      all();
+      await syncStateCloud();
+    }
+
+    async function addTenant(e) {
+      e?.preventDefault?.();
+      const name = ($('#tName').value || '').trim();
+      if (!name) return;
+      if (state.tenants.some((t) => t.name === name)) {
+        alertInline('#fT', 'Bu adda icarədar artıq var.');
+        return;
+      }
+      state.tenants.push({ id: uid(), name, role: ($('#tRole').value || '').trim(), fee: Math.max(0, Number($('#tFee').value) || 0) });
+      logAction(`İcarədar əlavə edildi: ${name}`);
+      $('#fT').reset();
+      fillSelects();
+      all();
+      await syncStateCloud();
+    }
+
+    function alertInline(formSel, text) {
+      const form = $(formSel);
+      let el = form.querySelector('.msg');
+      if (!el) {
+        el = document.createElement('div');
+        el.className = 'msg err';
+        el.style.gridColumn = '1/-1';
+        form.appendChild(el);
+      }
+      el.className = 'msg err';
+      el.textContent = text;
+      el.classList.remove('hidden');
+      setTimeout(() => el.classList.add('hidden'), 4000);
+    }
+
+    /* ---------- Xərclər ---------- */
+
+    async function addExp(e) {
+      e?.preventDefault?.();
+      const amount = Number($('#eAmount').value) || 0;
+      if (amount <= 0) {
+        showMsg('#expMsg', 'Məbləği daxil edin.');
+        return;
+      }
+      const raw = ($('#eDate').value || '').trim();
+      const date = raw ? normD(raw) : fmtDate();
+      if (!date) {
+        showMsg('#expMsg', 'Tarix düzgün deyil. Format: GG.AA.İİ (məs: 22.11.26)');
+        return;
+      }
+      const item = {
+        id: uid(), date,
+        cat: $('#eCat').value || 'Digər',
+        desc: ($('#eDesc').value || '').trim(),
+        amount,
+        method: $('#eMethod').value || 'Nağd'
+      };
+      state.expenses.unshift(item);
+      logAction(`Xərc əlavə edildi: ${item.cat} — ${n2(amount)}`);
+      $('#eAmount').value = '';
+      $('#eDesc').value = '';
+      showMsg('#expMsg', 'Xərc yadda saxlanıldı.', 'ok');
+      all();
+      await syncStateCloud();
+    }
+
+    /* ---------- Maliyyə hesabı ---------- */
+
+    function calcFin(m) {
+      const svc = recs.filter((r) => r.status === 'Tamamlandı' && !isTenantRec(r) && monthOfDate(r.date) === m);
+      const svcRev = sum(svc, (r) => r.price);
+      const rentPays = state.rentPays.filter((p) => p.month === m);
+      const staffPays = state.staffPays.filter((p) => p.month === m);
+      const exps = state.expenses.filter((x) => monthOfDate(x.date) === m);
+      const rentIn = sum(rentPays);
+      const expSum = sum(exps);
+
+      const staffRows = state.staff.map((s) => {
+        const done = svc.filter((r) => r.assignee === `Əməkdaş: ${s.name}`);
+        const turnover = sum(done, (r) => r.price);
+        const due = s.payType === 'salary' ? s.fee : (turnover * s.fee) / 100;
+        const paid = sum(staffPays.filter((p) => p.name === s.name));
+        return { s, cnt: done.length, turnover, due, paid, left: Math.max(0, due - paid) };
+      });
+      const staffDue = sum(staffRows, (x) => x.due);
+
+      const tenantRows = state.tenants.map((t) => {
+        const paid = sum(rentPays.filter((p) => p.name === t.name));
+        return { t, paid, left: Math.max(0, t.fee - paid) };
+      });
+
+      const methods = PAY_METHODS.map((pm) => {
+        const inn = sum(svc.filter((r) => r.payMethod === pm), (r) => r.price) + sum(rentPays.filter((p) => p.method === pm));
+        const out = sum(exps.filter((x) => x.method === pm)) + sum(staffPays.filter((p) => p.method === pm));
+        return { pm, inn, out, bal: inn - out };
+      });
+
+      const expByCat = {};
+      exps.forEach((x) => { expByCat[x.cat] = (expByCat[x.cat] || 0) + x.amount; });
+
+      return {
+        svc, svcRev, rentPays, staffPays, exps, rentIn, expSum,
+        staffRows, staffDue, tenantRows, methods, expByCat,
+        net: svcRev + rentIn - expSum - staffDue
+      };
+    }
+
+    async function payStaff(id) {
+      const s = state.staff.find((x) => x.id === id);
+      const amount = Number($(`#pa_${id}`)?.value) || 0;
+      if (!s || amount <= 0) return;
+      const m = monthFromInput('#finMonth');
+      state.staffPays.unshift({ id: uid(), name: s.name, month: m, amount, method: $(`#pm_${id}`).value, date: fmtDate() });
+      logAction(`Ustaya ödəniş: ${s.name} — ${n2(amount)} (${monthLabel(m)})`);
+      all();
+      await syncStateCloud();
+    }
+
+    async function receiveRent(id) {
+      const t = state.tenants.find((x) => x.id === id);
+      const amount = Number($(`#pa_${id}`)?.value) || 0;
+      if (!t || amount <= 0) return;
+      const m = monthFromInput('#finMonth');
+      state.rentPays.unshift({ id: uid(), name: t.name, month: m, amount, method: $(`#pm_${id}`).value, date: fmtDate() });
+      logAction(`İcarə qəbul edildi: ${t.name} — ${n2(amount)} (${monthLabel(m)})`);
+      all();
+      await syncStateCloud();
+    }
+
+    function payControls(id, left, fn, label) {
+      return `
+        <div class="row-actions">
+          <input id="pa_${id}" class="mini-input" type="number" step="0.01" min="0" value="${left > 0 ? n2(left) : ''}" placeholder="0.00" />
+          <select id="pm_${id}" class="mini-select">${methodOptions('Nağd')}</select>
+          <button type="button" class="btn btn-primary btn-sm" onclick="${fn}('${id}')">${label}</button>
+        </div>`;
+    }
+
+    function csvCell(v) {
+      const s = String(v ?? '');
+      return /[";,\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+    }
+
+    function exportFinCsv() {
+      const m = monthFromInput('#finMonth');
+      const f = calcFin(m);
+      const rows = [['Tarix', 'Növ', 'Təsvir', 'Üsul', 'Məbləğ']];
+      f.svc.forEach((r) => rows.push([r.date, 'Xidmət gəliri', `${r.cust} — ${r.srv}`, r.payMethod, n2(r.price)]));
+      f.rentPays.forEach((p) => rows.push([p.date, 'İcarə gəliri', p.name, p.method, n2(p.amount)]));
+      f.exps.forEach((x) => rows.push([x.date, `Xərc: ${x.cat}`, x.desc, x.method, `-${n2(x.amount)}`]));
+      f.staffPays.forEach((p) => rows.push([p.date, 'Usta ödənişi', p.name, p.method, `-${n2(p.amount)}`]));
+      rows.push([]);
+      rows.push(['', 'Xidmət gəliri', '', '', n2(f.svcRev)]);
+      rows.push(['', 'İcarə gəliri', '', '', n2(f.rentIn)]);
+      rows.push(['', 'Xərclər', '', '', n2(f.expSum)]);
+      rows.push(['', 'Usta payı (hesablanan)', '', '', n2(f.staffDue)]);
+      rows.push(['', 'Xalis mənfəət', '', '', n2(f.net)]);
+      const csv = '﻿' + rows.map((r) => r.map(csvCell).join(';')).join('\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `maliyye_${m.replace('.', '_')}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+    }
+
+    /* ---------- Ayarlar ---------- */
+
+    async function saveSettings(e) {
+      e?.preventDefault?.();
+      state.settings.salonName = ($('#setSalonName').value || '').trim() || 'Salon';
+      state.settings.currency = ($('#setCurrency').value || '').trim() || 'AZN';
+      $('#sideSalonTitle').textContent = state.settings.salonName;
+      logAction('Salon ayarları yeniləndi');
+      fillSelects();
+      all();
+      await syncStateCloud();
+      showMsg('#setMsg', 'Ayarlar yadda saxlanıldı.', 'ok');
+    }
+
+    /* ---------- Render ---------- */
+
+    function statusPill(st) {
+      if (st === 'Tamamlandı') return `<span class="pill ok">${esc(st)}</span>`;
+      if (st === 'Təsdiqləndi') return `<span class="pill ok" style="opacity:.8">${esc(st)}</span>`;
+      if (st === 'Ləğv edildi') return `<span class="pill err">${esc(st)}</span>`;
+      return `<span class="pill warn">${esc(st || 'Gözləyir')}</span>`;
+    }
+
+    function filteredRecs() {
+      const q = ($('#qSearch')?.value || '').trim().toLowerCase();
+      if (!q) return recs;
+      return recs.filter((r) =>
+        [r.cust, r.phone, r.srv, r.date, r.assignee].some((v) => String(v || '').toLowerCase().includes(q))
+      );
+    }
+
+    function setKpi(sel, val) {
+      const el = $(sel);
+      el.textContent = n2(val);
+      el.classList.toggle('pos', val > 0);
+      el.classList.toggle('neg', val < 0);
+    }
+
+    function rDash() {
+      const cur = getCurrency();
+      const today = fmtDate();
+      const m = curMonth();
+      const h = new Date().getHours();
+      $('#greetTitle').textContent = h < 12 ? 'Sabahınız xeyir' : h < 18 ? 'Günortanız xeyir' : 'Axşamınız xeyir';
+
+      const todayRecs = recs.filter((r) => r.date === today && r.status !== 'Ləğv edildi');
+      $('#kpiToday').textContent = todayRecs.length;
+      $('#kpiTodaySub').textContent = todayRecs.length
+        ? `${todayRecs.filter((x) => x.status === 'Tamamlandı').length} tamamlanıb`
+        : 'Bu gün görüş yoxdur';
+
+      const open = recs.filter((r) => r.status === 'Gözləyir' || r.status === 'Təsdiqləndi');
+      $('#kpiOpen').textContent = open.length;
+      $('#kpiOpenSub').textContent = `Gözlənilən məbləğ: ${money(sum(open, (r) => r.price))}`;
+
+      const f = calcFin(m);
+      $('#kpiRev').textContent = n2(f.svcRev);
+      $('#kpiAvgSub').textContent = `Orta çek: ${money(f.svc.length ? f.svcRev / f.svc.length : 0)}`;
+      setKpi('#kpiNet', f.net);
+      $('#kpiNetSub').textContent = `Xərc: ${n2(f.expSum)} · Usta: ${n2(f.staffDue)} · İcarə: +${n2(f.rentIn)}`;
+
+      // 7 gün
+      const days = [];
+      const now = new Date();
+      for (let i = 6; i >= 0; i--) {
+        const d = new Date(now);
+        d.setDate(now.getDate() - i);
+        const label = fmtDate(d);
+        const daySum = sum(recs.filter((r) => r.date === label && r.status === 'Tamamlandı' && !isTenantRec(r)), (r) => r.price);
+        days.push({ label, shortLbl: label.slice(0, 5), sum: daySum });
+      }
+      const maxVal = Math.max(...days.map((x) => x.sum), 1);
+      $('#weekTotalBadge').textContent = money(sum(days, (x) => x.sum));
+      $('#weeklyChart').innerHTML = days.map((d) => {
+        const pct = d.sum > 0 ? Math.max(8, Math.round((d.sum / maxVal) * 100)) : 2;
+        return `
+          <div class="bar-col" title="${esc(d.label)}: ${n2(d.sum)} ${esc(cur)}">
+            <span class="bar-val">${d.sum > 0 ? d.sum.toFixed(0) : '0'}</span>
+            <div class="bar-track"><div class="bar-fill" style="height:${pct}%;"></div></div>
+            <span class="bar-lbl">${esc(d.shortLbl)}</span>
+          </div>`;
+      }).join('');
+
+      // kateqoriya gəliri
+      const byCat = state.cats.map((c) => {
+        const items = f.svc.filter((r) => (state.services.find((s) => s.name === r.srv)?.cat || 'Ümumi') === c);
+        return { cat: c, cnt: items.length, rev: sum(items, (r) => r.price) };
+      });
+      const maxCat = Math.max(...byCat.map((x) => x.rev), 1);
+      $('#catBreakdown').innerHTML = byCat.map((item) => {
+        const pct = item.rev > 0 ? Math.max(4, Math.round((item.rev / maxCat) * 100)) : 0;
+        return `
+          <div class="cat-progress-item">
+            <div class="cat-progress-head">
+              <span>${esc(item.cat)}</span>
+              <span class="muted">${item.cnt} xidmət · ${esc(money(item.rev))}</span>
+            </div>
+            <div class="cat-progress-track"><div class="cat-progress-fill" style="width:${pct}%;"></div></div>
+          </div>`;
+      }).join('');
+
+      // yaxınlaşan
+      const startToday = parseD(today).getTime();
+      const upcoming = filteredRecs()
+        .filter((r) => (r.status === 'Gözləyir' || r.status === 'Təsdiqləndi') && recSortKey(r) >= startToday)
+        .sort((a, b) => recSortKey(a) - recSortKey(b))
+        .slice(0, 8);
+      $('#dashRows').innerHTML = upcoming.length
+        ? upcoming.map((r) => `
+          <tr>
+            <td><strong>${esc(r.cust)}</strong><div class="muted">${esc(r.phone || '')}</div></td>
+            <td>${esc(r.srv)}</td>
+            <td><span class="muted">${esc(r.assignee || 'Təyin edilməyib')}</span></td>
+            <td>${esc(r.date)} ${esc(r.time || '')}</td>
+            <td class="num"><strong>${n2(r.price)}</strong> ${esc(cur)}</td>
+            <td>${statusPill(r.status)}</td>
+          </tr>`).join('')
+        : '<tr><td colspan="6" class="muted">Yaxınlaşan rezervasiya yoxdur</td></tr>';
+    }
+
+    function rFin() {
+      const m = monthFromInput('#finMonth');
+      const f = calcFin(m);
+      const cur = getCurrency();
+
+      $('#finSvc').textContent = n2(f.svcRev);
+      $('#finSvcSub').textContent = `${f.svc.length} tamamlanmış xidmət`;
+      $('#finRent').textContent = n2(f.rentIn);
+      const rentDue = sum(f.tenantRows, (x) => x.left);
+      $('#finRentSub').textContent = rentDue > 0 ? `Borc: ${money(rentDue)}` : 'Borc yoxdur';
+      $('#finExp').textContent = n2(f.expSum);
+      $('#finExpSub').textContent = `${f.exps.length} qeyd`;
+      $('#finStaff').textContent = n2(f.staffDue);
+      const staffLeft = sum(f.staffRows, (x) => x.left);
+      $('#finStaffSub').textContent = staffLeft > 0 ? `Ödənilməyib: ${money(staffLeft)}` : 'Hamısı ödənilib';
+      setKpi('#finNet', f.net);
+
+      $('#finMethodRows').innerHTML = f.methods.map((x) => `
+        <tr>
+          <td><strong>${x.pm}</strong></td>
+          <td class="num">${n2(x.inn)}</td>
+          <td class="num">${n2(x.out)}</td>
+          <td class="num"><strong>${n2(x.bal)}</strong> ${esc(cur)}</td>
+        </tr>`).join('');
+
+      const cats = Object.entries(f.expByCat).sort((a, b) => b[1] - a[1]);
+      const maxE = Math.max(...cats.map((x) => x[1]), 1);
+      $('#finExpCats').innerHTML = cats.length
+        ? cats.map(([c, v]) => `
+          <div class="cat-progress-item">
+            <div class="cat-progress-head"><span>${esc(c)}</span><span class="muted">${esc(money(v))}</span></div>
+            <div class="cat-progress-track"><div class="cat-progress-fill exp" style="width:${Math.max(4, Math.round((v / maxE) * 100))}%;"></div></div>
+          </div>`).join('')
+        : '<div class="muted">Bu ay xərc qeyd olunmayıb</div>';
+
+      $('#finStaffRows').innerHTML = f.staffRows.length
+        ? f.staffRows.map((x) => `
+          <tr>
+            <td><strong>${esc(x.s.name)}</strong><div class="muted">${esc(x.s.role || '')}</div></td>
+            <td>${x.s.payType === 'salary' ? `Maaş ${n2(x.s.fee)}` : `${n2(x.s.fee)}%`}</td>
+            <td class="num">${x.cnt}</td>
+            <td class="num">${n2(x.turnover)}</td>
+            <td class="num"><strong>${n2(x.due)}</strong></td>
+            <td class="num">${n2(x.paid)}</td>
+            <td class="num">${x.left > 0 ? `<span class="pill warn">${n2(x.left)}</span>` : '<span class="pill ok">0.00</span>'}</td>
+            <td>${payControls(x.s.id, x.left, 'payStaff', 'Ödə')}</td>
+          </tr>`).join('')
+        : '<tr><td colspan="8" class="muted">Əməkdaş əlavə edilməyib</td></tr>';
+
+      $('#finTenRows').innerHTML = f.tenantRows.length
+        ? f.tenantRows.map((x) => `
+          <tr>
+            <td><strong>${esc(x.t.name)}</strong><div class="muted">${esc(x.t.role || '')}</div></td>
+            <td class="num">${n2(x.t.fee)}</td>
+            <td class="num">${n2(x.paid)}</td>
+            <td class="num">${n2(x.left)}</td>
+            <td>${x.left <= 0 ? '<span class="pill ok">Ödənilib</span>' : x.paid > 0 ? '<span class="pill warn">Qismən</span>' : '<span class="pill err">Ödənilməyib</span>'}</td>
+            <td>${payControls(x.t.id, x.left, 'receiveRent', 'Qəbul et')}</td>
+          </tr>`).join('')
+        : '<tr><td colspan="6" class="muted">İcarədar əlavə edilməyib</td></tr>';
+
+      const pays = [
+        ...f.rentPays.map((p) => ({ ...p, kind: 'İcarə alındı', key: 'rentPays', sign: '+' })),
+        ...f.staffPays.map((p) => ({ ...p, kind: 'Usta ödənişi', key: 'staffPays', sign: '−' }))
+      ].sort((a, b) => (parseD(b.date)?.getTime() || 0) - (parseD(a.date)?.getTime() || 0));
+      $('#finPayRows').innerHTML = pays.length
+        ? pays.map((p) => `
+          <tr>
+            <td>${esc(p.date)}</td>
+            <td>${p.kind}</td>
+            <td>${esc(p.name)}</td>
+            <td>${esc(p.method)}</td>
+            <td class="num">${p.sign}${n2(p.amount)}</td>
+            <td><button type="button" class="btn btn-danger btn-sm" onclick="delItem('${p.key}', '${esc(p.id)}')">Sil</button></td>
+          </tr>`).join('')
+        : '<tr><td colspan="6" class="muted">Bu ay ödəniş qeydi yoxdur</td></tr>';
+    }
+
+    function rExp() {
+      const m = monthFromInput('#expMonth');
+      const list = state.expenses
+        .filter((x) => monthOfDate(x.date) === m)
+        .sort((a, b) => (parseD(b.date)?.getTime() || 0) - (parseD(a.date)?.getTime() || 0));
+      $('#expTotal').textContent = `${monthLabel(m)}: ${money(sum(list))}`;
+      $('#expRows').innerHTML = list.length
+        ? list.map((x) => `
+          <tr>
+            <td>${esc(x.date)}</td>
+            <td>${esc(x.cat)}</td>
+            <td>${esc(x.desc || '-')}</td>
+            <td>${esc(x.method)}</td>
+            <td class="num"><strong>${n2(x.amount)}</strong></td>
+            <td><button type="button" class="btn btn-danger btn-sm" onclick="delItem('expenses', '${esc(x.id)}')">Sil</button></td>
+          </tr>`).join('')
+        : '<tr><td colspan="6" class="muted">Bu ay xərc yoxdur</td></tr>';
+    }
+
+    function rRez() {
+      const cur = getCurrency();
+      const stFilter = $('#fStatus').value || '';
+      const list = filteredRecs()
+        .filter((r) => !stFilter || r.status === stFilter)
+        .sort((a, b) => recSortKey(b) - recSortKey(a));
+      $('#rezRows').innerHTML = list.length
+        ? list.map((r) => `
+          <tr>
+            <td><strong>${esc(r.cust)}</strong><div class="muted">${esc(r.phone || '')}${r.note ? ` · ${esc(r.note)}` : ''}</div></td>
+            <td>${esc(r.srv)}</td>
+            <td><span class="muted">${esc(r.assignee || '-')}</span></td>
+            <td>${esc(r.date)} ${esc(r.time || '')}</td>
+            <td class="num">${n2(r.price)} ${esc(cur)}</td>
+            <td><select class="mini-select" onchange="setRezField('${esc(r.id)}', 'payMethod', this.value)">${methodOptions(r.payMethod)}</select></td>
+            <td>
+              <select class="status-select" onchange="setRezField('${esc(r.id)}', 'status', this.value)">
+                ${STATUSES.map((st) => `<option value="${st}" ${r.status === st ? 'selected' : ''}>${st}</option>`).join('')}
+              </select>
+            </td>
+            <td><button type="button" class="btn btn-danger btn-sm" onclick="delRez('${esc(r.id)}')">Sil</button></td>
+          </tr>`).join('')
+        : '<tr><td colspan="8" class="muted">Qeyd tapılmadı</td></tr>';
+    }
+
+    function rRep() {
+      const cur = getCurrency();
+      const m = monthFromInput('#repMonth');
+      const list = recs.filter((r) => monthOfDate(r.date) === m).sort((a, b) => recSortKey(a) - recSortKey(b));
+      $('#repCnt').textContent = list.filter((r) => r.status !== 'Ləğv edildi').length;
+      $('#repDone').textContent = n2(sum(list.filter((r) => r.status === 'Tamamlandı'), (r) => r.price));
+      $('#repCancel').textContent = list.filter((r) => r.status === 'Ləğv edildi').length;
+      $('#repRows').innerHTML = list.length
+        ? list.map((r) => `
+          <tr>
+            <td>${esc(r.date)} ${esc(r.time || '')}</td>
+            <td>${esc(r.cust)}</td>
+            <td>${esc(r.srv)}</td>
+            <td><span class="muted">${esc(r.assignee || '-')}</span></td>
+            <td>${esc(r.payMethod)}</td>
+            <td class="num">${n2(r.price)} ${esc(cur)}</td>
+            <td>${statusPill(r.status)}</td>
+          </tr>`).join('')
+        : '<tr><td colspan="7" class="muted">Bu ay üçün qeyd yoxdur</td></tr>';
+    }
+
+    function rSrv() {
+      const cur = getCurrency();
+      $('#srvRows').innerHTML = state.services.length
+        ? state.services.map((s) => `
+          <tr>
+            <td><strong>${esc(s.name)}</strong></td>
+            <td>${esc(s.cat)}</td>
+            <td class="num">${n2(s.price)} ${esc(cur)}</td>
+            <td><button type="button" class="btn btn-danger btn-sm" onclick="delItem('services', '${esc(s.id)}')">Sil</button></td>
+          </tr>`).join('')
+        : '<tr><td colspan="4" class="muted">Xidmət əlavə edilməyib</td></tr>';
+    }
+
+    function rCat() {
+      const chip = (key, c, used) => `<span class="badge">${esc(c)}${used ? '' : `<button type="button" title="Sil" onclick="delCat('${key}', this.dataset.n)" data-n="${esc(c)}">×</button>`}</span>`;
+      $('#catList').innerHTML = state.cats.map((c) => chip('cats', c, state.services.some((s) => s.cat === c))).join('');
+      $('#expCatList').innerHTML = state.expCats.map((c) => chip('expCats', c, state.expenses.some((x) => x.cat === c))).join('');
+    }
+
+    function rCust() {
+      const cur = getCurrency();
+      const map = new Map();
+      recs.forEach((r) => {
+        const key = (r.cust || '').trim();
+        if (!key) return;
+        const it = map.get(key) || { name: key, phone: '-', cnt: 0, sum: 0, last: 0, lastLbl: '-' };
+        it.cnt += 1;
+        if (r.status === 'Tamamlandı') {
+          it.sum += Number(r.price) || 0;
+          const k = recSortKey(r);
+          if (k > it.last) { it.last = k; it.lastLbl = r.date; }
+        }
+        if (r.phone) it.phone = r.phone;
+        map.set(key, it);
+      });
+      const rows = Array.from(map.values()).sort((a, b) => b.sum - a.sum);
+      $('#custRows').innerHTML = rows.length
+        ? rows.map((c) => `
+          <tr>
+            <td><strong>${esc(c.name)}</strong></td>
+            <td>${esc(c.phone)}</td>
+            <td class="num">${c.cnt}</td>
+            <td>${esc(c.lastLbl)}</td>
+            <td class="num">${n2(c.sum)} ${esc(cur)}</td>
+          </tr>`).join('')
+        : '<tr><td colspan="5" class="muted">Müştəri yoxdur</td></tr>';
+    }
+
+    function rRem() {
+      $('#remRows').innerHTML = state.rems.length
+        ? state.rems.map((rm) => `
+          <tr>
+            <td>${esc(rm.text)}</td>
+            <td>${esc(rm.date)}</td>
+            <td>${rm.done ? '<span class="pill ok">Bağlı</span>' : '<span class="pill warn">Aktiv</span>'}</td>
+            <td>
+              <div class="row-actions">
+                <button type="button" class="btn btn-ghost btn-sm" onclick="toggleRem('${esc(rm.id)}')">${rm.done ? 'Aç' : 'Bitir'}</button>
+                <button type="button" class="btn btn-danger btn-sm" onclick="delItem('rems', '${esc(rm.id)}')">Sil</button>
+              </div>
+            </td>
+          </tr>`).join('')
+        : '<tr><td colspan="4" class="muted">Reminder yoxdur</td></tr>';
+    }
+
+    function rStaff() {
+      const f = calcFin(curMonth());
+      $('#staffRows').innerHTML = f.staffRows.length
+        ? f.staffRows.map((x) => `
+          <tr>
+            <td><strong>${esc(x.s.name)}</strong></td>
+            <td>${esc(x.s.role || '-')}</td>
+            <td>${x.s.payType === 'salary' ? `Aylıq maaş: ${esc(money(x.s.fee))}` : `Xidmətdən ${n2(x.s.fee)}%`}</td>
+            <td class="num">${n2(x.turnover)}</td>
+            <td class="num"><strong>${n2(x.due)}</strong></td>
+            <td><button type="button" class="btn btn-danger btn-sm" onclick="delItem('staff', '${esc(x.s.id)}')">Sil</button></td>
+          </tr>`).join('')
+        : '<tr><td colspan="6" class="muted">Əməkdaş yoxdur</td></tr>';
+    }
+
+    function rTen() {
+      const f = calcFin(curMonth());
+      $('#tenRows').innerHTML = f.tenantRows.length
+        ? f.tenantRows.map((x) => `
+          <tr>
+            <td><strong>${esc(x.t.name)}</strong></td>
+            <td>${esc(x.t.role || '-')}</td>
+            <td class="num">${esc(money(x.t.fee))}</td>
+            <td>${x.left <= 0 ? '<span class="pill ok">Ödənilib</span>' : `<span class="pill err">Borc: ${n2(x.left)}</span>`}</td>
+            <td><button type="button" class="btn btn-danger btn-sm" onclick="delItem('tenants', '${esc(x.t.id)}')">Sil</button></td>
+          </tr>`).join('')
+        : '<tr><td colspan="5" class="muted">İcarədar yoxdur</td></tr>';
+    }
+
+    function rJur() {
+      const list = state.journal || [];
+      $('#jurList').innerHTML = list.length
+        ? list.map((j) => `
+          <div style="padding:8px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;gap:10px;">
+            <span>${esc(j.text)}</span>
+            <span class="muted" style="white-space:nowrap;">${esc(j.date)} ${esc(j.time || '')}</span>
+          </div>`).join('')
+        : '<div class="muted">Jurnal boşdur</div>';
+    }
+
+    function all() {
+      if (!currentUser) return;
+      $('#bdgRez').textContent = recs.filter((r) => r.status === 'Gözləyir' || r.status === 'Təsdiqləndi').length;
+      $('#bdgRem').textContent = state.rems.filter((x) => !x.done).length;
+      $('#todayLabel').textContent = `Bu gün: ${fmtDate()}`;
+      rDash();
+      rFin();
+      rExp();
+      rRep();
+      rRez();
+      rSrv();
+      rCat();
+      rStaff();
+      rTen();
+      rCust();
+      rRem();
+      rJur();
+    }
+
+    async function applySession(session) {
+      currentUser = session?.user || null;
+      if (!currentUser) {
+        $('#appShell').classList.add('hidden');
+        $('#loginOverlay').classList.remove('hidden');
+        return;
+      }
+      $('#loginOverlay').classList.add('hidden');
+      $('#appShell').classList.remove('hidden');
+      $('#userEmailLabel').textContent = String(currentUser.email || '').replace(`@${USER_DOMAIN}`, '');
+      await loadUserCloudData();
+    }
+
+    window.addEventListener('unhandledrejection', (event) => {
+      const msg = String(event?.reason?.message || event?.reason || '');
+      if (msg.includes('WebSocket not available') || msg.includes('is not allowed in Canvas')) {
+        event.preventDefault();
+        setCloudStatus('warn', 'Preview WebSocket məhdudiyyəti');
+      }
+    });
+
+    (async () => {
+      $('#todayLabel').textContent = `Bu gün: ${fmtDate()}`;
+      applyThemeClass('light');
+      if (!sb) return;
+      try {
+        const { data, error } = await sb.auth.getSession();
+        if (!error && data?.session) await applySession(data.session);
+        sb.auth.onAuthStateChange((event, sess) => {
+          if (sess) {
+            // eyni istifadəçi (token yenilənməsi və s.) — məlumatı təkrar yükləmə
+            if (!isLocalPreview && currentUser?.id === sess.user?.id) return;
+            isLocalPreview = false;
+            applySession(sess);
+          } else if (!isLocalPreview) {
+            applySession(null);
+          }
+        });
+      } catch (err) {
+        showAuthMsg(err?.message || 'Sessiya yoxlanarkən xəta baş verdi.', 'warn');
+      }
+    })();
+  </script>
+</body>
+</html>
