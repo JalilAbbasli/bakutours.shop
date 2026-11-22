@@ -353,11 +353,6 @@
         </div>
         <button id="loginBtn" type="submit" class="btn btn-primary w-full">Daxil ol</button>
       </form>
-      <div style="margin-top:12px;">
-        <button type="button" class="btn btn-ghost btn-sm w-full" onclick="enterLocalPreviewSession()">
-          Yerli rejimdə daxil ol (məlumat yalnız bu brauzerdə qalır)
-        </button>
-      </div>
       <div class="muted" style="margin-top:12px;text-align:center;">Hesabı yalnız salon rəhbəri yarada bilər.</div>
 
       <div id="authMsg" class="msg hidden"></div>
@@ -1283,11 +1278,6 @@
 
     /* ---------- Giriş ---------- */
 
-    async function enterLocalPreviewSession() {
-      isLocalPreview = true;
-      await applySession({ user: { id: 'local_preview_user', email: 'Yerli rejim' } });
-    }
-
     let loginBusy = false;
     async function handleLogin(e) {
       if (e && typeof e.preventDefault === 'function') e.preventDefault();
@@ -1300,7 +1290,7 @@
         return;
       }
       if (!sb) {
-        showAuthMsg('Serverə qoşulmaq olmadı. İnterneti yoxlayın, səhifəni yeniləyin və ya yerli rejimdə daxil olun.', 'err');
+        showAuthMsg('Serverə qoşulmaq olmadı. İnterneti yoxlayın və səhifəni yeniləyin.', 'err');
         return;
       }
       // istifadəçi adı -> daxili e-poçt (ad@salon.local); köhnə e-poçtlu hesablar da işləyir

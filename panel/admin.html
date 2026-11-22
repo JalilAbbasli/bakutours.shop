@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Salon Panel — Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root {
+      --bg: #f6f4f8; --surface: #fff; --surface-2: #fbf9fd; --text: #1b1722; --muted: #6c6578;
+      --border: #e6e0ee; --accent: #7c3aed; --accent-2: #6d28d9; --accent-soft: #f3ecff;
+      --ok: #15803d; --ok-bg: #dcfce7; --warn: #b45309; --warn-bg: #fef3c7; --err: #b91c1c; --err-bg: #fee2e2;
+      --radius: 14px; --shadow: 0 1px 2px rgba(27,23,34,.04), 0 6px 20px rgba(27,23,34,.05);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Montserrat', sans-serif; font-size: 13.5px; line-height: 1.5;
+      background: var(--bg); color: var(--text); min-height: 100vh;
+      background-image: radial-gradient(circle at 12% 8%, rgba(124,58,237,.08), transparent 36%);
+    }
+    input, button { font-family: inherit; }
+    .hidden { display: none !important; }
+    .wrap { max-width: 980px; margin: 0 auto; padding: 24px 20px 48px; }
+    .center { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); margin-bottom: 16px; }
+    .auth { width: 100%; max-width: 400px; }
+    .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; }
+    .brand-icon { width: 36px; height: 36px; border-radius: 10px; background: var(--accent); color: #fff; display: grid; place-items: center; font-weight: 700; }
+    .title { font-size: 18px; font-weight: 700; }
+    .sub, .muted { font-size: 12px; color: var(--muted); }
+    .card-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+    .field { margin-bottom: 12px; }
+    .field label { display: block; font-size: 11.5px; font-weight: 600; color: var(--muted); margin-bottom: 5px; }
+    input { width: 100%; font-size: 13px; color: var(--text); background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 9px 11px; outline: none; }
+    input:focus { border-color: var(--accent); }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-size: 12.5px; font-weight: 600; border-radius: 10px; padding: 9px 14px; border: 1px solid transparent; cursor: pointer; white-space: nowrap; }
+    .btn:disabled { opacity: .6; cursor: default; }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover:not(:disabled) { background: var(--accent-2); }
+    .btn-ghost { background: var(--surface-2); color: var(--text); border-color: var(--border); }
+    .btn-sm { padding: 6px 10px; font-size: 11.5px; border-radius: 8px; }
+    .w-full { width: 100%; }
+    .msg { margin-top: 10px; font-size: 12px; padding: 8px 10px; border-radius: 8px; word-break: break-word; }
+    .msg.err { background: var(--err-bg); color: var(--err); }
+    .msg.ok { background: var(--ok-bg); color: var(--ok); }
+    .msg.warn { background: var(--warn-bg); color: var(--warn); }
+    .top { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--border); font-size: 12.5px; vertical-align: middle; }
+    th { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; }
+    .table-wrap { overflow-x: auto; }
+    .pill { display: inline-block; padding: 3px 8px; border-radius: 999px; font-size: 11px; font-weight: 600; background: var(--accent-soft); color: var(--accent); }
+    .mini { width: 140px; padding: 6px 9px; font-size: 12px; border-radius: 8px; }
+    .done-box { background: var(--ok-bg); color: var(--ok); border-radius: 10px; padding: 12px 14px; margin-top: 12px; font-size: 13px; }
+    .done-box code { background: rgba(0,0,0,.06); padding: 1px 6px; border-radius: 6px; font-weight: 700; }
+    @media (max-width: 760px) { .grid-3 { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <!-- GİRİŞ -->
+  <div id="loginView" class="center">
+    <div class="card auth">
+      <div class="brand">
+        <div class="brand-icon">S</div>
+        <div><div class="title">Salon Panel — Admin</div><div class="sub">Yalnız administrator üçün</div></div>
+      </div>
+      <form id="loginForm" onsubmit="login(event)">
+        <div class="field"><label for="lUser">İstifadəçi adı</label><input id="lUser" type="text" required autocomplete="username" autocapitalize="none" spellcheck="false" /></div>
+        <div class="field"><label for="lPass">Parol</label><input id="lPass" type="password" required autocomplete="current-password" /></div>
+        <button id="lBtn" type="submit" class="btn btn-primary w-full">Daxil ol</button>
+      </form>
+      <div id="lMsg" class="msg hidden"></div>
+    </div>
+  </div>
+
+  <!-- ADMİN -->
+  <div id="adminView" class="wrap hidden">
+    <div class="top">
+      <div class="brand" style="margin:0;">
+        <div class="brand-icon">S</div>
+        <div><div class="title">Salon hesabları</div><div class="sub" id="whoLabel"></div></div>
+      </div>
+      <div class="row">
+        <a class="btn btn-ghost btn-sm" href="./" style="text-decoration:none;">Panelə keç</a>
+        <button class="btn btn-ghost btn-sm" onclick="logout()">Çıxış</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Yeni salon hesabı</div>
+      <div class="muted" style="margin-bottom:12px;">Salon bu istifadəçi adı və parolla panelə daxil olacaq. Hər salon yalnız öz məlumatını görür.</div>
+      <form id="createForm" onsubmit="createSalon(event)">
+        <div class="grid-3">
+          <div class="field"><label for="cSalon">Salonun adı</label><input id="cSalon" type="text" required placeholder="Məs: Gözəllik Studio" /></div>
+          <div class="field"><label for="cUser">İstifadəçi adı</label><input id="cUser" type="text" required placeholder="məs: gozellik" autocapitalize="none" spellcheck="false" autocomplete="off" /></div>
+          <div class="field">
+            <label for="cPass">Parol (ən azı 6 simvol)</label>
+            <div class="row" style="flex-wrap:nowrap;">
+              <input id="cPass" type="text" required minlength="6" autocomplete="new-password" spellcheck="false" />
+              <button type="button" class="btn btn-ghost btn-sm" onclick="genPass('#cPass')" title="Təsadüfi parol yarat">Yarat</button>
+            </div>
+          </div>
+        </div>
+        <button id="cBtn" type="submit" class="btn btn-primary">+ Hesab yarat</button>
+      </form>
+      <div id="cMsg" class="msg hidden"></div>
+      <div id="cDone" class="done-box hidden"></div>
+    </div>
+
+    <div class="card">
+      <div class="row" style="justify-content:space-between;margin-bottom:10px;">
+        <div class="card-title" style="margin:0;">Mövcud hesablar</div>
+        <button class="btn btn-ghost btn-sm" onclick="loadUsers()">Yenilə</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Salon</th><th>İstifadəçi adı</th><th>Yaradılıb</th><th>Son giriş</th><th>Yeni parol</th></tr></thead>
+          <tbody id="userRows"><tr><td colspan="5" class="muted">Yüklənir...</td></tr></tbody>
+        </table>
+      </div>
+      <div id="uMsg" class="msg hidden"></div>
+    </div>
+  </div>
+
+  <script>
+    const SB_URL = 'https://ykcfsqbuustvderioxph.supabase.co';
+    const SB_KEY = 'sb_publishable_6tdzSskT4VmGLQBu8QU95A_3T8V1Dn_';
+    const USER_DOMAIN = 'salon.local';
+    const FN = 'salon-admin';
+
+    const $ = (s) => document.querySelector(s);
+    const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (m) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
+    const fmt = (iso) => {
+      if (!iso) return '—';
+      const d = new Date(iso);
+      const p = (n) => String(n).padStart(2, '0');
+      return `${p(d.getDate())}.${p(d.getMonth() + 1)}.${String(d.getFullYear()).slice(-2)} ${p(d.getHours())}:${p(d.getMinutes())}`;
+    };
+
+    function msg(sel, text, mode = 'err') {
+      const el = $(sel);
+      el.textContent = text;
+      el.className = `msg ${mode}`;
+    }
+    const hide = (sel) => $(sel).classList.add('hidden');
+
+    let sb = null;
+    try {
+      if (window.supabase?.createClient) sb = window.supabase.createClient(SB_URL, SB_KEY, { auth: { persistSession: true, autoRefreshToken: true } });
+    } catch (_) {}
+
+    async function callFn(body) {
+      const { data, error } = await sb.functions.invoke(FN, { body });
+      if (error) {
+        let text = error.message;
+        try { const j = await error.context.json(); if (j?.error) text = j.error; } catch (_) {}
+        const e = new Error(text);
+        e.status = error.context?.status;
+        throw e;
+      }
+      if (data?.error) throw new Error(data.error);
+      return data;
+    }
+
+    function show(view) {
+      $('#loginView').classList.toggle('hidden', view !== 'login');
+      $('#adminView').classList.toggle('hidden', view !== 'admin');
+    }
+
+    async function enterAdmin(user) {
+      try {
+        await callFn({ action: 'list' }).then(renderUsers);
+        $('#whoLabel').textContent = `Administrator: ${String(user.email || '').replace('@' + USER_DOMAIN, '')}`;
+        show('admin');
+      } catch (e) {
+        show('login');
+        if (e.status === 403) {
+          await sb.auth.signOut();
+          msg('#lMsg', 'Bu hesabın admin icazəsi yoxdur.');
+        } else {
+          msg('#lMsg', `Xəta: ${e.message}`);
+        }
+      }
+    }
+
+    async function login(e) {
+      e.preventDefault();
+      if (!sb) return msg('#lMsg', 'Serverə qoşulmaq olmadı. İnterneti yoxlayın və səhifəni yeniləyin.');
+      const raw = $('#lUser').value.trim().toLowerCase();
+      const email = raw.includes('@') ? raw : `${raw}@${USER_DOMAIN}`;
+      $('#lBtn').disabled = true;
+      msg('#lMsg', 'Yoxlanılır...', 'warn');
+      try {
+        const { data, error } = await sb.auth.signInWithPassword({ email, password: $('#lPass').value });
+        if (error) return msg('#lMsg', error.message === 'Invalid login credentials' ? 'İstifadəçi adı və ya parol yanlışdır.' : error.message);
+        hide('#lMsg');
+        $('#lPass').value = '';
+        await enterAdmin(data.user);
+      } finally {
+        $('#lBtn').disabled = false;
+      }
+    }
+
+    async function logout() {
+      try { await sb.auth.signOut(); } catch (_) {}
+      show('login');
+    }
+
+    function genPass(sel) {
+      const chars = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ23456789';
+      const arr = new Uint32Array(10);
+      crypto.getRandomValues(arr);
+      $(sel).value = Array.from(arr, (n) => chars[n % chars.length]).join('');
+    }
+
+    async function createSalon(e) {
+      e.preventDefault();
+      const salonName = $('#cSalon').value.trim();
+      const username = $('#cUser').value.trim().toLowerCase();
+      const password = $('#cPass').value;
+      if (!/^[a-z0-9._-]{2,40}$/.test(username)) return msg('#cMsg', 'İstifadəçi adında yalnız latın hərfləri, rəqəm, nöqtə, _ və - ola bilər (2–40 simvol).');
+      if (password.length < 6) return msg('#cMsg', 'Parol ən azı 6 simvol olmalıdır.');
+      $('#cBtn').disabled = true;
+      hide('#cDone');
+      msg('#cMsg', 'Yaradılır...', 'warn');
+      try {
+        const res = await callFn({ action: 'create', salonName, username, password });
+        hide('#cMsg');
+        const link = new URL('./', location.href).href;
+        $('#cDone').innerHTML = `<strong>${esc(salonName)}</strong> üçün hesab yaradıldı.<br>Giriş ünvanı: <code>${esc(link)}</code><br>İstifadəçi adı: <code>${esc(res.login)}</code> &nbsp; Parol: <code>${esc(password)}</code><br><span class="muted">Bu məlumatı salona göndərin. Parol bir daha göstərilməyəcək.</span>${res.warning ? `<br><span class="muted">Qeyd: salon adı ayarlara yazılmadı (${esc(res.warning)}). Salon onu Ayarlar bölməsində yaza bilər.</span>` : ''}`;
+        $('#cDone').classList.remove('hidden');
+        $('#createForm').reset();
+        loadUsers();
+      } catch (err) {
+        msg('#cMsg', err.message);
+      } finally {
+        $('#cBtn').disabled = false;
+      }
+    }
+
+    function renderUsers(data) {
+      const users = data?.users || [];
+      $('#userRows').innerHTML = users.length
+        ? users.map((u) => `
+          <tr>
+            <td><strong>${esc(u.salon || '—')}</strong>${u.is_admin ? ' <span class="pill">admin</span>' : ''}</td>
+            <td>${esc(u.login)}</td>
+            <td>${fmt(u.created_at)}</td>
+            <td>${fmt(u.last_sign_in_at)}</td>
+            <td>
+              <div class="row" style="flex-wrap:nowrap;">
+                <input class="mini" id="rp_${esc(u.id)}" type="text" placeholder="yeni parol" autocomplete="off" spellcheck="false" />
+                <button class="btn btn-ghost btn-sm" onclick="resetPass('${esc(u.id)}', this.dataset.login)" data-login="${esc(u.login)}">Dəyiş</button>
+              </div>
+            </td>
+          </tr>`).join('')
+        : '<tr><td colspan="5" class="muted">Hesab yoxdur</td></tr>';
+    }
+
+    async function loadUsers() {
+      hide('#uMsg');
+      try { renderUsers(await callFn({ action: 'list' })); }
+      catch (e) { msg('#uMsg', e.message); }
+    }
+
+    async function resetPass(id, login) {
+      const input = document.getElementById(`rp_${id}`);
+      const password = input.value;
+      if (password.length < 6) return msg('#uMsg', 'Yeni parol ən azı 6 simvol olmalıdır.');
+      msg('#uMsg', 'Dəyişdirilir...', 'warn');
+      try {
+        await callFn({ action: 'reset', username: login, password });
+        input.value = '';
+        msg('#uMsg', `"${login}" üçün yeni parol təyin edildi: ${password}`, 'ok');
+      } catch (e) {
+        msg('#uMsg', e.message);
+      }
+    }
+
+    (async () => {
+      if (!sb) return msg('#lMsg', 'Serverə qoşulmaq olmadı. İnterneti yoxlayın və səhifəni yeniləyin.');
+      const { data } = await sb.auth.getSession();
+      if (data?.session) await enterAdmin(data.session.user);
+    })();
+  </script>
+</body>
+</html>
